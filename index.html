@@ -408,4 +408,488 @@ function openGame(url){
 
 </body>
   </html>
-  
+ 
+<section id="profile" class="page">
+<style>
+#profile{color:#fff;padding:12px 12px 100px}
+#profile *{box-sizing:border-box}
+#profile h3{font-size:17px;margin:20px 0 12px}
+#profile button{cursor:pointer;color:white;background:#303039;border:1px solid #444;border-radius:9px;padding:11px}
+#profile button.primary{background:#ff3155;border-color:#ff3155}
+#profile button.active{background:#ff3155}
+#profile .card{background:#202027;border:1px solid #38383f;border-radius:13px;padding:14px;margin:12px 0}
+#profile .cover{height:125px;border-radius:14px;background:linear-gradient(120deg,#ff3155,#9c1836,#252530)}
+#profile .avatar{width:90px;height:90px;border-radius:50%;border:5px solid #202027;margin-top:-45px;background:#ff3155;display:grid;place-items:center;font-size:32px;background-position:center;background-size:cover}
+#profile .stats{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;margin-top:16px;gap:5px}
+#profile .stats strong{display:block;color:#ff3155;font-size:20px}
+#profile .stats small{color:#aaa;font-size:11px}
+#profile .actions{display:flex;gap:8px;margin-top:15px}
+#profile .actions button{flex:1}
+#profile .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#profile .grid button{line-height:1.7}
+#profile .tabs{display:flex;gap:7px;overflow-x:auto;margin:12px 0}
+#profile .tabs button{white-space:nowrap}
+#profile .panel{display:none}
+#profile .panel.active{display:block}
+#profile input,#profile textarea,#profile select{width:100%;padding:11px;margin:7px 0 12px;background:#18181f;color:white;border:1px solid #444;border-radius:8px}
+#profile label{color:#ff8296;font-size:13px}
+#profile .menu{background:#202027;border:1px solid #38383f;border-radius:12px;overflow:hidden}
+#profile .menu button{width:100%;display:flex;justify-content:space-between;text-align:left;border:0;border-bottom:1px solid #38383f;border-radius:0;background:transparent;padding:15px}
+#profile .menu button:last-child{border:0}
+#profile .muted{color:#aaa;font-size:12px}
+#profile .item{background:#18181f;border:1px solid #38383f;border-radius:10px;padding:12px;margin:9px 0;overflow-wrap:anywhere}
+#profile .item button{margin:4px}
+#profile .hidden-panel{display:none}
+#profile .hidden-panel.show{display:block}
+#profile .progress{height:7px;background:#444;border-radius:10px;overflow:hidden;margin:9px 0}
+#profile .progress div{height:100%;background:#ff3155}
+#profile .modal{display:none;position:fixed;inset:0;background:#000c;z-index:999999;align-items:center;justify-content:center;padding:18px}
+#profile .modal.show{display:flex}
+#profile .modal-card{width:100%;max-width:360px;background:#202027;border:1px solid #ff3155;border-radius:14px;padding:20px;text-align:center}
+#profile .modal-card button{margin:5px}
+</style>
+
+<!-- PROFILE HEADER -->
+<div class="cover"></div>
+<div class="card">
+ <div class="avatar" id="spAvatar">S</div>
+ <h2 id="spName">STRIPON Creator</h2>
+ <p class="muted" id="spHandle">@stripon_creator</p>
+ <p id="spBio">Welcome to my STRIPON profile.</p>
+ <button class="primary" onclick="SP.editProfile()">✏️ Edit profile</button>
+
+ <div class="stats">
+  <div><strong id="spPosts">0</strong><small>Posts</small></div>
+  <div><strong id="spFollowers">0</strong><small>Followers</small></div>
+  <div><strong id="spFollowing">0</strong><small>Following</small></div>
+  <div><strong id="spLikes">0</strong><small>Likes</small></div>
+ </div>
+ <div class="actions">
+  <button class="primary" id="spFollow" onclick="SP.follow()">＋ Follow</button>
+  <button class="primary" id="spSubscribe" onclick="SP.subscribe()">⭐ Subscribe</button>
+ </div>
+</div>
+
+<!-- PROFILE EDITOR -->
+<div class="card hidden-panel" id="spEditor">
+ <h3>Edit your profile</h3>
+ <label>Profile picture</label>
+ <input type="file" id="spPicture" accept="image/*">
+ <label>Username</label>
+ <input id="spEditName" maxlength="30">
+ <label>Handle</label>
+ <input id="spEditHandle" maxlength="30">
+ <label>Bio</label>
+ <textarea id="spEditBio" maxlength="160"></textarea>
+ <button class="primary" onclick="SP.saveProfile()">Save changes</button>
+ <button onclick="SP.closeEditor()">Cancel</button>
+</div>
+
+<!-- FOLLOWING -->
+<h3>👥 Community</h3>
+<div class="tabs">
+ <button class="active" onclick="SP.community('followers',this)">Followers</button>
+ <button onclick="SP.community('following',this)">Following</button>
+ <button onclick="SP.community('subscriptions',this)">Subscriptions</button>
+</div>
+<div class="card" id="spCommunity">Your community lists will appear here.</div>
+
+<!-- CONTENT -->
+<h3>🎬 My Content</h3>
+<div class="tabs">
+ <button class="active" onclick="SP.content('videos',this)">Videos</button>
+ <button onclick="SP.content('shorts',this)">Shorts</button>
+ <button onclick="SP.content('saved',this)">Saved</button>
+ <button onclick="SP.content('liked',this)">Liked</button>
+ <button onclick="SP.content('downloads',this)">Downloads</button>
+</div>
+<div class="card" id="spContent">Your videos and posts will appear here.</div>
+
+<!-- PERSONAL LIBRARY -->
+<h3>⭐ Personal Collection</h3>
+<div class="grid">
+ <button onclick="SP.library('history')">🕒<br>Watch History</button>
+ <button onclick="SP.library('playlists')">📁<br>Playlists</button>
+ <button onclick="SP.library('recent')">▶️<br>Recently Watched</button>
+ <button onclick="SP.library('continue')">⏯️<br>Continue Watching</button>
+</div>
+<div class="card" id="spLibrary">
+ <h3 id="spLibraryTitle">My Library</h3>
+ <input id="spLibrarySearch" placeholder="Search your videos..." oninput="SP.renderLibrary()">
+ <div class="tabs">
+  <button onclick="SP.library('history')">History</button>
+  <button onclick="SP.library('recent')">Recent</button>
+  <button onclick="SP.library('playlists')">Playlists</button>
+  <button onclick="SP.library('continue')">Continue</button>
+ </div>
+ <div id="spLibraryItems"></div>
+</div>
+
+<!-- CREATOR STUDIO -->
+<h3>🎨 STRIPON Creator Studio</h3>
+<p class="muted">Manage your content and creator activities.</p>
+
+<div class="card">
+ <h3>📊 Creator Overview</h3>
+ <div class="stats">
+  <div><strong id="csViews">0</strong><small>Views</small></div>
+  <div><strong id="csLikes">0</strong><small>Likes</small></div>
+  <div><strong id="csComments">0</strong><small>Comments</small></div>
+  <div><strong id="csPosts">0</strong><small>Content</small></div>
+ </div>
+ <p class="muted" id="csStatus">Demo statistics saved on this device.</p>
+</div>
+
+<div class="tabs" id="csTabs">
+ <button class="active" onclick="SP.creator('dashboard',this)">Dashboard</button>
+ <button onclick="SP.creator('content',this)">Content</button>
+ <button onclick="SP.creator('analytics',this)">Analytics</button>
+ <button onclick="SP.creator('audience',this)">Audience</button>
+ <button onclick="SP.creator('comments',this)">Comments</button>
+ <button onclick="SP.creator('goals',this)">Goals</button>
+ <button onclick="SP.creator('live',this)">Live</button>
+ <button onclick="SP.creator('earnings',this)">Earnings</button>
+ <button onclick="SP.creator('tools',this)">Tools</button>
+</div>
+
+<div class="card" id="csDashboard" class="creator-panel">
+ <h3>🚀 Creator Dashboard</h3>
+ <p>Manage your videos and track your creator progress.</p>
+ <button class="primary" onclick="SP.addContent()">＋ Add content record</button>
+ <button onclick="SP.creator('analytics')">View analytics</button>
+ <h3>📌 Creator checklist</h3>
+ <label><input type="checkbox"> Complete your profile</label><br>
+ <label><input type="checkbox"> Publish your first video</label><br>
+ <label><input type="checkbox"> Create a playlist</label><br>
+ <label><input type="checkbox"> Review your analytics</label>
+</div>
+
+<div class="card hidden-panel" id="csContent">
+ <h3>🎬 Content Management</h3>
+ <input id="csSearch" placeholder="Search content..." oninput="SP.renderCreatorContent()">
+ <button class="primary" onclick="SP.addContent()">＋ Add content record</button>
+ <div id="csContentList"></div>
+</div>
+
+<div class="card hidden-panel" id="csAnalytics">
+ <h3>📈 Analytics</h3>
+ <label>Time period</label>
+ <select id="csPeriod" onchange="SP.renderAnalytics()">
+  <option value="7">Last 7 days</option>
+  <option value="30">Last 30 days</option>
+  <option value="90">Last 90 days</option>
+ </select>
+ <div id="csAnalyticsResult"></div>
+ <p class="muted">Real views and engagement require connection to your video player and database.</p>
+</div>
+
+<div class="card hidden-panel" id="csAudience">
+ <h3>👥 Audience Insights</h3>
+ <p>Audience statistics will appear when real STRIPON account data is connected.</p>
+ <button onclick="SP.refresh()">Refresh data</button>
+</div>
+
+<div class="card hidden-panel" id="csComments">
+ <h3>💬 Comment Management</h3>
+ <input id="csCommentVideo" placeholder="Video title">
+ <textarea id="csCommentText" placeholder="Enter a demo comment"></textarea>
+ <button class="primary" onclick="SP.addComment()">Add comment</button>
+ <div id="csCommentList"></div>
+</div>
+
+<div class="card hidden-panel" id="csGoals">
+ <h3>🎯 Creator Goals</h3>
+ <input id="csGoalName" placeholder="Goal name">
+ <input id="csGoalTarget" type="number" min="1" placeholder="Target number">
+ <button class="primary" onclick="SP.addGoal()">Create goal</button>
+ <div id="csGoalList"></div>
+</div>
+
+<div class="card hidden-panel" id="csLive">
+ <h3>🔴 Live Studio</h3>
+ <label>Live title</label>
+ <input id="csLiveTitle" placeholder="Enter live title">
+ <label>Description</label>
+ <textarea id="csLiveDescription" placeholder="Describe your live stream"></textarea>
+ <button class="primary" onclick="SP.prepareLive()">Save live setup</button>
+ <p id="csLiveResult" class="muted"></p>
+</div>
+
+<div class="card hidden-panel" id="csEarnings">
+ <h3>💰 Creator Earnings</h3>
+ <p>Estimated earnings: <strong>Not connected</strong></p>
+ <p class="muted">Payment history and withdrawals require a secure monetization and payment system.</p>
+</div>
+
+<div class="card hidden-panel" id="csTools">
+ <h3>🧰 Creator Tools</h3>
+ <label>Save content idea</label>
+ <input id="csIdea" placeholder="Your next video idea">
+ <button class="primary" onclick="SP.saveIdea()">Save idea</button>
+ <div id="csIdeas"></div>
+ <hr>
+ <h3>📝 Drafts</h3>
+ <input id="csDraftTitle" placeholder="Draft title">
+ <textarea id="csDraftText" placeholder="Write your draft"></textarea>
+ <button class="primary" onclick="SP.saveDraft()">Save draft</button>
+ <div id="csDrafts"></div>
+</div>
+
+<!-- SOCIAL -->
+<h3>💬 Social Activity</h3>
+<div class="grid">
+ <button onclick="SP.notice('Messages')">✉️<br>Messages</button>
+ <button onclick="SP.notice('Notifications')">🔔<br>Notifications</button>
+ <button onclick="SP.notice('Mentions')">@<br>Mentions</button>
+ <button onclick="SP.notice('Comments')">💬<br>Comments</button>
+</div>
+
+<!-- PRIVACY -->
+<h3>🔐 Privacy and Security</h3>
+<div class="menu">
+ <button onclick="SP.toggleSetting('private')">Private account <span id="spPrivate">OFF</span></button>
+ <button onclick="SP.toggleSetting('notifications')">Notifications <span id="spNotifications">ON</span></button>
+ <button onclick="SP.toggleSetting('twoStep')">Two-step verification <span id="spTwoStep">OFF</span></button>
+ <button onclick="SP.notice('Login activity')">Login activity <span>›</span></button>
+ <button onclick="SP.notice('Blocked users')">Blocked users <span>›</span></button>
+ <button onclick="SP.notice('Data permissions')">Data permissions <span>›</span></button>
+</div>
+
+<!-- SETTINGS -->
+<h3>⚙️ Settings and Support</h3>
+<div class="menu">
+ <button onclick="SP.notice('Appearance and themes')">Appearance and themes <span>›</span></button>
+ <button onclick="SP.notice('Language')">Language <span>›</span></button>
+ <button onclick="SP.notice('Help centre')">Help centre <span>›</span></button>
+ <button onclick="SP.report()">🚩 Report a problem <span>›</span></button>
+ <button onclick="SP.notice('About STRIPON')">About STRIPON <span>›</span></button>
+</div>
+
+<!-- LOGOUT -->
+<div class="card">
+ <h3>🚪 Account</h3>
+ <button class="primary" onclick="SP.logout('local')">Log out of this device</button>
+ <button onclick="SP.logout('global')">Log out of all devices</button>
+ <p class="muted" id="spLogoutStatus"></p>
+</div>
+
+<div class="modal" id="spModal">
+ <div class="modal-card">
+  <h3 id="spModalTitle">Confirm</h3>
+  <p id="spModalText"></p>
+  <button onclick="SP.closeModal()">Cancel</button>
+  <button class="primary" id="spModalConfirm">Confirm</button>
+ </div>
+</div>
+
+<script>
+(function(){
+ if(window.STRIPON_PROFILE_READY)return;
+ window.STRIPON_PROFILE_READY=true;
+
+ const $=id=>document.getElementById(id);
+ const profileKey='stripon_profile_v4';
+ const libraryKey='stripon_library_v4';
+ const creatorKey='stripon_creator_v4';
+
+ const load=(key,fallback)=>{
+  try{return JSON.parse(localStorage.getItem(key))||fallback}
+  catch(e){return fallback}
+ };
+ const save=(key,value)=>{
+  try{localStorage.setItem(key,JSON.stringify(value))}
+  catch(e){alert('Your device storage is full.')}
+ };
+ const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ })[c]);
+
+ let profile=load(profileKey,{
+  name:'STRIPON Creator',handle:'@stripon_creator',
+  bio:'Welcome to my STRIPON profile.',avatar:'',
+  following:false,subscribed:false,followers:0,
+  followingCount:0,posts:0,likes:0,
+  settings:{private:false,notifications:true,twoStep:false}
+ });
+
+ let library=load(libraryKey,{history:[],playlists:[]});
+ let creator=load(creatorKey,{
+  content:[],comments:[],goals:[],ideas:[],drafts:[],live:null
+ });
+ let libraryView='history';
+
+ function saveAll(){
+  save(profileKey,profile);
+  save(libraryKey,library);
+  save(creatorKey,creator);
+ }
+
+ function button(parent,text,fn){
+  const b=document.createElement('button');
+  b.textContent=text;b.onclick=fn;parent.append(b);return b;
+ }
+
+ function renderProfile(){
+  $('spName').textContent=profile.name;
+  $('spHandle').textContent=profile.handle;
+  $('spBio').textContent=profile.bio;
+  $('spPosts').textContent=profile.posts;
+  $('spFollowers').textContent=profile.followers;
+  $('spFollowing').textContent=profile.followingCount;
+  $('spLikes').textContent=profile.likes;
+  $('spAvatar').textContent=profile.avatar?'':'S';
+  $('spAvatar').style.backgroundImage=profile.avatar?'url('+profile.avatar+')':'';
+  $('spFollow').textContent=profile.following?'✓ Following':'＋ Follow';
+  $('spSubscribe').textContent=profile.subscribed?'✓ Subscribed':'⭐ Subscribe';
+  $('spPrivate').textContent=profile.settings.private?'ON':'OFF';
+  $('spNotifications').textContent=profile.settings.notifications?'ON':'OFF';
+  $('spTwoStep').textContent=profile.settings.twoStep?'ON':'OFF';
+ }
+
+ function editProfile(){
+  $('spEditor').classList.add('show');
+  $('spEditName').value=profile.name;
+  $('spEditHandle').value=profile.handle;
+  $('spEditBio').value=profile.bio;
+ }
+ function closeEditor(){$('spEditor').classList.remove('show')}
+
+ function saveProfile(){
+  const name=$('spEditName').value.trim();
+  let handle=$('spEditHandle').value.trim();
+  if(!name){alert('Enter a username.');return}
+  if(!handle)handle='@'+name.toLowerCase().replace(/\s+/g,'_');
+  if(!handle.startsWith('@'))handle='@'+handle;
+  profile.name=name;profile.handle=handle;
+  profile.bio=$('spEditBio').value.trim();
+
+  const file=$('spPicture').files[0];
+  const done=()=>{saveAll();renderProfile();closeEditor();alert('Profile saved on this device.')};
+  if(file){
+   if(!file.type.startsWith('image/')||file.size>2*1024*1024){
+    alert('Choose an image smaller than 2 MB.');return;
+   }
+   const reader=new FileReader();
+   reader.onload=()=>{profile.avatar=reader.result;done()};
+   reader.readAsDataURL(file);
+  }else done();
+ }
+
+ function follow(){
+  profile.following=!profile.following;
+  profile.followingCount=Math.max(0,profile.followingCount+(profile.following?1:-1));
+  saveAll();renderProfile();
+ }
+ function subscribe(){
+  profile.subscribed=!profile.subscribed;
+  saveAll();renderProfile();
+  alert(profile.subscribed?'Subscribed in demo mode.':'Subscription cancelled.');
+ }
+
+ function community(type,btn){
+  document.querySelectorAll('#profile .tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  $('spCommunity').textContent={
+   followers:'Your followers will appear here when real accounts are connected.',
+   following:'Accounts you follow will appear here.',
+   subscriptions:'Your subscriptions will appear here.'
+  }[type];
+ }
+
+ function content(type,btn){
+  document.querySelectorAll('#profile .tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  $('spContent').textContent={
+   videos:'Your published videos will appear here when connected to Posting.',
+   shorts:'Your Shorts will appear here.',
+   saved:'Your saved videos will appear here.',
+   liked:'Your liked videos will appear here.',
+   downloads:'Your downloaded content will appear here.'
+  }[type];
+ }
+
+ /* PERSONAL LIBRARY */
+
+ function trackWatch(video){
+  if(!video||!video.title)return null;
+  const url=String(video.url||'');
+  let v=url?library.history.find(x=>x.url===url):null;
+  if(!v){
+   v={id:Date.now().toString()+Math.random(),title:String(video.title),
+    channel:String(video.channel||'STRIPON Creator'),url,
+    watchedAt:Date.now(),progress:0,duration:0};
+   library.history.unshift(v);
+  }else v.watchedAt=Date.now();
+  saveAll();renderLibrary();return v.id;
+ }
+
+ function updateProgress(id,seconds,duration){
+  const v=library.history.find(x=>x.id===id);
+  if(!v)return;
+  v.progress=Math.max(0,Number(seconds)||0);
+  v.duration=Math.max(0,Number(duration)||0);
+  saveAll();
+ }
+
+ function library(type){
+  libraryView=type;
+  $('spLibrarySearch').value='';
+  renderLibrary();
+  $('spLibrary').scrollIntoView({behavior:'smooth',block:'start'});
+ }
+
+ function renderLibrary(){
+  const box=$('spLibraryItems');box.replaceChildren();
+  $('spLibraryTitle').textContent={
+   history:'🕒 Watch History',recent:'▶️ Recently Watched',
+   playlists:'📁 Playlists',continue:'⏯️ Continue Watching'
+  }[libraryView];
+
+  if(libraryView==='playlists'){
+   button(box,'＋ Create playlist',createPlaylist);
+   library.playlists.forEach(p=>{
+    const card=document.createElement('div');card.className='item';
+    const name=document.createElement('strong');name.textContent=p.name;
+    card.append(name);
+    button(card,'Open',()=>openPlaylist(p.id));
+    button(card,'Rename',()=>renamePlaylist(p.id));
+    button(card,'Delete',()=>deletePlaylist(p.id));
+    box.append(card);
+   });
+   if(!library.playlists.length)box.textContent='No playlists yet. Create your first playlist.';
+   return;
+  }
+
+  let list=[...library.history];
+  if(libraryView==='recent')list.sort((a,b)=>b.watchedAt-a.watchedAt).splice(20);
+  if(libraryView==='continue')list=list.filter(v=>v.duration>0&&v.progress>0&&v.progress<v.duration);
+  const q=$('spLibrarySearch').value.toLowerCase();
+  list=list.filter(v=>(v.title+' '+v.channel).toLowerCase().includes(q));
+
+  button(box,'Clear watch history',clearHistory);
+  list.forEach(v=>{
+   const card=document.createElement('div');card.className='item';
+   const title=document.createElement('strong');title.textContent=v.title;
+   const info=document.createElement('p');info.className='muted';
+   info.textContent=v.channel+' · '+new Date(v.watchedAt).toLocaleString();
+   const progress=document.createElement('div');progress.className='progress';
+   const bar=document.createElement('div');
+   bar.style.width=(v.duration?Math.min(100,v.progress/v.duration*100):0)+'%';
+   progress.append(bar);
+   card.append(title,info,progress);
+   button(card,'▶ Play',()=>playVideo(v));
+   button(card,'＋ Playlist',()=>addToPlaylist(v.id));
+   button(card,'Remove',()=>removeHistory(v.id));
+   box.append(card);
+  });
+  if(!list.length){
+   const p=document.createElement('p');p.className='muted';
+   p.textContent='No videos found. Watch a STRIPON video to start your history.';
+   box.append(p);
+  }
+ }
+
+ function createPlaylist(){
+  const name=prompt('Enter playlist name:');
+  if(!name?.trim())return;
+  library.playlists.push({id:Date.now().toString(),name:name.trim 
