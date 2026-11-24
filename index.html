@@ -1,411 +1,604 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STRIPON</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c0d12">
+<title>STRIPON — Watch, Create, Connect</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
- background:#101014;color:white;
- font-family:Arial,sans-serif;
- padding-bottom:75px;
+:root{--bg:#0c0d12;--panel:#171922;--card:#20232e;--text:#fff;--muted:#a7a9b5;--accent:#8b5cf6;--line:#343642}
+body.light{--bg:#f4f5fa;--panel:#fff;--card:#e9eaf1;--text:#171824;--muted:#606273;--line:#d8d9e2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;padding-bottom:82px}
+header{position:sticky;top:0;z-index:10;background:var(--panel);padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.logo{font-size:22px;font-weight:900;letter-spacing:1px;color:var(--accent);white-space:nowrap}
+.search{flex:1;min-width:0;max-width:520px;padding:11px 14px;border-radius:25px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+button,select{font:inherit}
+button{border:0;cursor:pointer;border-radius:10px;padding:10px 13px;background:var(--accent);color:#fff;font-weight:700}
+button:active{transform:scale(.97)}
+button.secondary{background:var(--card);color:var(--text)}
+main{max-width:1100px;margin:auto;padding:15px;padding-bottom:25px}
+.page{display:none}.page.active{display:block}
+h1,h2,h3{margin-top:12px}h2{font-size:22px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:15px;margin-top:16px}
+.video-card{overflow:hidden;border-radius:15px;background:var(--panel);border:1px solid var(--line);min-width:0}
+.video-card video{width:100%;aspect-ratio:16/9;object-fit:contain;background:#050507;display:block}
+.video-info{padding:12px}.video-info h3{margin:0 0 7px;font-size:16px;overflow-wrap:anywhere}
+.video-info p{overflow-wrap:anywhere}
+.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.actions button{background:var(--card);color:var(--text);font-size:13px;padding:8px 10px}
+.actions button.selected{background:var(--accent);color:#fff}
+.bottom-nav{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:var(--panel);border-top:1px solid var(--line);padding:7px 2px calc(7px + env(safe-area-inset-bottom))}
+.nav-item{background:transparent;color:var(--muted);padding:6px 3px;font-size:11px;flex:1}
+.nav-item span{display:block;font-size:20px;margin-bottom:3px}.nav-item.active{color:var(--accent)}
+.panel{background:var(--panel);padding:17px;border-radius:15px;border:1px solid var(--line);margin:14px 0}
+input,textarea,select{width:100%;padding:12px;margin:7px 0;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+textarea{min-height:85px;resize:vertical}
+label{display:block;margin-top:8px}
+.preview{width:100%;max-height:300px;margin-top:10px;border-radius:12px;background:#000}
+.shorts-container{max-width:440px;margin:auto}
+.short-card{position:relative;margin:15px auto;height:min(72vh,700px);background:#000;border-radius:18px;overflow:hidden}
+.short-card video{width:100%;height:100%;object-fit:contain}
+.short-details{position:absolute;bottom:0;left:0;right:0;padding:35px 14px 14px;background:linear-gradient(transparent,#000d);color:white}
+.short-details button{background:#ffffff30}
+.avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#ec4899);display:grid;place-items:center;font-size:35px;margin-bottom:12px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.stats{display:flex;gap:25px;flex-wrap:wrap;margin:18px 0}.stats strong{display:block;font-size:20px}
+.empty{text-align:center;padding:35px 10px;color:var(--muted);grid-column:1/-1}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#292b36;color:#fff;padding:12px 18px;border-radius:20px;display:none;z-index:50;max-width:90%;text-align:center}
+.game-link{display:block;padding:16px;background:var(--card);border-radius:12px;margin:10px 0;color:var(--text);text-decoration:none}
+.game-link strong{display:block;margin-bottom:5px}
+#gameFilters button{font-size:12px;padding:8px 10px}
+#gameFilters button.selected{background:var(--accent);color:#fff}
+#playlistArea .panel{margin:12px 0;padding:12px}
+
+/* STRIPON YouTube-inspired purple home page */
+#home{
+  min-height:calc(100vh - 150px);
+  margin:-15px;
+  padding:22px 18px 30px;
+  background:linear-gradient(180deg,#241044 0%,#35145f 42%,#1c1032 100%);
+  border-radius:0 0 18px 18px;
 }
-header{
- height:65px;background:#18181f;
- display:flex;align-items:center;
- justify-content:space-between;
- padding:0 16px;
- position:sticky;top:0;z-index:10;
-}
-.logo{font-size:25px;font-weight:bold;color:#ff3155}
-.header-icons{display:flex;gap:20px;font-size:21px}
-.search{
- margin:14px;width:calc(100% - 28px);
- padding:13px;border-radius:25px;
- border:1px solid #38383f;
- background:#222229;color:white;
-}
-.categories{
- display:flex;gap:10px;padding:5px 14px 15px;
- overflow-x:auto;
-}
-.categories button{
- background:#292930;color:white;
- border:0;border-radius:20px;
- padding:10px 17px;white-space:nowrap;
-}
-.categories button.active{background:#ff3155}
-h2{font-size:19px;margin:15px 0}
-.section{padding:0 14px;margin-bottom:24px}
-.video-grid{
- display:grid;grid-template-columns:1fr 1fr;gap:12px;
-}
-.video-card{
- background:#202027;border-radius:12px;
- overflow:hidden;
-}
-.video-card img{
- width:100%;aspect-ratio:16/10;object-fit:cover;
- display:block;
-}
-.video-card h3{font-size:14px;padding:9px}
-.video-card p{font-size:12px;color:#aaa;padding:0 9px 10px}
-.shorts-grid{
- display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
-}
-.short-card{
- height:220px;border-radius:12px;overflow:hidden;
- position:relative;background:#292930;
-}
-.short-card img{width:100%;height:100%;object-fit:cover}
-.short-card span{
- position:absolute;bottom:10px;left:9px;
- font-weight:bold;text-shadow:0 1px 5px black;
-}
-.create-box{
- background:#202027;padding:16px;border-radius:12px;
-}
-.create-options{
- display:grid;grid-template-columns:repeat(3,1fr);
- gap:10px;margin-top:15px;
-}
-.create-options button{
- background:#303039;padding:16px 5px;
- border-radius:10px;font-size:14px;
-}
-button{cursor:pointer;color:white;border:0}
-input,textarea{
- background:#222229;color:white;
- border:1px solid #444;padding:12px;
- border-radius:9px;width:100%;margin-top:10px;
-}
-.game{
- background:#202027;padding:17px;
- border-radius:12px;margin:10px 0;
-}
-.game button{
- background:#ff3155;padding:10px 17px;
- border-radius:8px;margin-top:12px;
-}
-.profile{text-align:center;padding:20px;background:#202027;border-radius:12px}
-.avatar{
- width:85px;height:85px;border-radius:50%;
- background:#ff3155;margin:0 auto 12px;
- display:grid;place-items:center;font-size:30px;
-}
-.bottom{
- position:fixed;bottom:0;left:0;width:100%;
- background:#18181f;display:flex;
- justify-content:space-around;padding:12px 2px;
- z-index:20;border-top:1px solid #333;
-}
-.bottom button{
- background:none;font-size:11px;
- display:flex;flex-direction:column;
- align-items:center;gap:5px;
-}
-.bottom span{font-size:20px}
-.page{display:none}
-.page.active{display:block}
-#preview{width:100%;margin-top:12px;max-height:300px}
+#home h2{color:#fff;font-size:25px;font-weight:800;margin:5px 0 7px}
+#home>p{color:#e2d4ff}
+#home .video-grid{display:flex;flex-direction:column;gap:18px;margin-top:20px;max-width:850px;margin-left:auto;margin-right:auto}
+#home .video-card{width:100%;background:#2b1550;border:1px solid #7545a8;border-radius:15px;box-shadow:0 5px 18px #10051f80}
+#home .video-card video{width:100%;aspect-ratio:16/9;object-fit:contain;background:#10091b}
+#home .video-info{padding:13px 15px}
+#home .video-info h3{color:#fff;font-size:17px}
+#home .video-info p{color:#d7c5f4}
+#home .actions button{background:#512783;color:#fff}
+#home .actions button.selected{background:#a56bff}
+header{background:#241044;border-bottom:1px solid #7545a8}
+.logo{color:#c5a0ff}
+.search{background:#170b29;border-color:#7545a8;color:#fff}
+#themeButton{background:#512783;color:#fff}
+.bottom-nav{background:#241044;border-top:1px solid #7545a8}
+.nav-item{color:#d7c5f4}
+.nav-item.active{color:#c5a0ff}
+@media(max-width:520px){main{padding:10px}#home{margin:-10px;padding:18px 11px 25px;border-radius:0 0 14px 14px}#home .video-grid{gap:13px}#home .video-card{border-radius:12px}.logo{font-size:18px}header{gap:7px}.nav-item{font-size:10px}}
 </style>
 </head>
-
 <body>
-
 <header>
- <div class="logo">STRIPON</div>
- <div class="header-icons">
-  <span onclick="showPage('posting')">＋</span>
-  <span onclick="alert('Notifications will be available when accounts are connected.')">♧</span>
-  <span onclick="showPage('profile')">👤</span>
- </div>
+  <div class="logo">STRIPON</div>
+  <input class="search" id="searchInput" type="search" placeholder="Search videos..." aria-label="Search videos">
+  <button id="themeButton" class="secondary" type="button" aria-label="Switch theme">☾</button>
 </header>
 
-<input class="search" id="search"
-placeholder="Search videos, creators and more..."
-oninput="searchVideos()">
+<main>
+  <section class="page active" id="home">
+    <h2>Discover videos</h2>
+    <p class="muted">Explore videos and creators on STRIPON.</p>
+    <div class="video-grid" id="allVideos"></div>
+  </section>
 
-<div class="categories">
- <button class="active" onclick="showPage('home',this)">All</button>
- <button onclick="showPage('shorts',this)">Shorts</button>
- <button onclick="showPage('gaming',this)">Gaming</button>
- <button onclick="showPage('posting',this)">Create</button>
- <button onclick="showPage('profile',this)">Profile</button>
-</div>
+  <section class="page" id="shorts">
+    <h2>STRIPON Shorts</h2>
+    <p class="muted">Short-form videos from creators.</p>
+    <div class="shorts-container" id="shortVideos"></div>
+  </section>
 
-<!-- HOME -->
-<div id="home" class="page active">
+  <section class="page" id="posting">
+    <h2>Create something</h2>
+    <div class="panel">
+      <h3>Upload a video</h3>
+      <label for="videoTitle">Video title</label>
+      <input id="videoTitle" maxlength="100" placeholder="Enter a title">
+      <label for="videoDescription">Description</label>
+      <textarea id="videoDescription" maxlength="1000" placeholder="Write a description..."></textarea>
+      <label for="videoCategory">Choose where it appears</label>
+      <select id="videoCategory">
+        <option value="home">Home video</option>
+        <option value="shorts">Shorts</option>
+        <option value="gaming">Gaming video</option>
+      </select>
+      <label for="videoFile">Choose a video from your device</label>
+      <input id="videoFile" type="file" accept="video/*">
+      <video id="preview" class="preview" controls playsinline hidden></video>
+      <button id="publishButton" type="button">Publish video</button>
+      <p class="muted small">This GitHub Pages demo saves uploads on this browser/device using local storage database (IndexedDB). It does not publish videos to other users or to an online server.</p>
+    </div>
+  </section>
 
- <div class="section">
-  <h2>Discover videos</h2>
-  <div class="video-grid" id="videoGrid">
+  <section class="page" id="gaming">
+    <h2>Gaming centre 🎮</h2>
+    <p class="muted">Find browser games by category, or watch gaming videos shared on STRIPON.</p>
+    <div class="panel">
+      <h3>Gaming centre search</h3>
+      <input id="gameSearch" type="search" placeholder="Search games or categories..." aria-label="Search games">
+      <div class="actions" id="gameFilters">
+        <button class="secondary selected" data-game-filter="All">All</button>
+        <button class="secondary" data-game-filter="Football">Football</button>
+        <button class="secondary" data-game-filter="Racing">Racing</button>
+        <button class="secondary" data-game-filter="Fighting">Fighting</button>
+        <button class="secondary" data-game-filter="Motorbike">Motorbike</button>
+        <button class="secondary" data-game-filter="Puzzle">Puzzle</button>
+        <button class="secondary" data-game-filter="Board">Board</button>
+        <button class="secondary" data-game-filter="Casual">Casual</button>
+        <button class="secondary" data-game-filter="Online">Online</button>
+      </div>
+      <div id="gameDirectory"></div>
+      <p class="muted small">Games open on their providers' websites. Availability and age ratings are controlled by those providers.</p>
+    </div>
+    <div class="panel">
+      <h3>Gaming videos</h3>
+      <p class="muted small">Upload gameplay, highlights, reviews or tutorials using Posting → Gaming video.</p>
+      <div class="video-grid" id="gamingVideos"></div>
+    </div>
+  </section>
 
-   <div class="video-card">
-    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600">
-    <h3>Luxury lifestyle</h3>
-    <p>STRIPON • Trending</p>
-   </div>
+  <section class="page" id="profile">
+    <h2>Your profile</h2>
+    <div class="panel">
+      <div class="avatar" id="avatar">S</div>
+      <label for="username">Username</label>
+      <input id="username" maxlength="40" placeholder="Your username">
+      <label for="bio">About you</label>
+      <textarea id="bio" maxlength="300" placeholder="Tell people about yourself"></textarea>
+      <label for="avatarFile">Profile picture</label>
+      <input type="file" id="avatarFile" accept="image/*">
+      <button id="saveProfileButton" type="button">Save profile</button>
+      <div class="stats">
+        <div><strong id="uploadCount">0</strong><span class="muted">Videos</span></div>
+        <div><strong id="likeCount">0</strong><span class="muted">Likes</span></div>
+        <div><strong id="savedCount">0</strong><span class="muted">Saved</span></div>
+      </div>
+      <div class="actions">
+        <button class="secondary" id="followDemoButton" type="button">＋ Follow creator (demo)</button>
+        <button class="secondary" id="subscribeDemoButton" type="button">☆ Subscribe (demo)</button>
+      </div>
+      <div class="stats">
+        <div><strong id="followersCount">0</strong><span class="muted">Followers</span></div>
+        <div><strong id="followingCount">0</strong><span class="muted">Following</span></div>
+        <div><strong id="subscriptionsCount">0</strong><span class="muted">Subscriptions</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Creator tools</h3>
+      <p class="muted small">A local creator dashboard for this browser.</p>
+      <div class="stats">
+        <div><strong id="creatorUploads">0</strong><span class="muted">Published videos</span></div>
+        <div><strong id="creatorLikes">0</strong><span class="muted">Likes received*</span></div>
+      </div>
+      <button class="secondary" id="creatorUploadsButton" type="button">View my uploads</button>
+      <p class="muted small">*Likes received are not available as a shared public metric in this offline demo.</p>
+    </div>
+    <div class="panel">
+      <h3>Playlists</h3>
+      <input id="playlistName" maxlength="60" placeholder="New playlist name">
+      <button id="createPlaylistButton" type="button">Create playlist</button>
+      <div id="playlistArea"></div>
+    </div>
+    <div class="panel">
+      <h3>Watching history & recently watched</h3>
+      <p class="muted small">Videos you start playing on this device appear here.</p>
+      <div class="video-grid" id="historyVideos"></div>
+      <button class="secondary" id="clearHistoryButton" type="button">Clear watching history</button>
+         </div>    <div class="panel">
+      <h3>My library</h3>
+      <div class="actions">
+        <button class="secondary" data-library="uploads">My uploads</button>
+        <button class="secondary" data-library="liked">Liked videos</button>
+        <button class="secondary" data-library="saved">Saved videos</button>
+      </div>
+      <div class="video-grid" id="library"></div>
+    </div>
+    <div class="panel">
+      <h3>Settings</h3>
+      <button class="secondary" id="profileThemeButton" type="button">Switch appearance</button>
+      <button class="secondary" id="privacyButton" type="button">Privacy information</button>
+      <button class="secondary" id="reportButton" type="button">Report a problem</button>
+      <button class="secondary" id="logoutButton" type="button">Log out</button>
+      <button class="secondary" id="clearDataButton" type="button">Clear local demo data</button>
+      <p class="muted small">This is a browser-only demo. Logout ends the local demo session; real account security and cross-device settings require a backend.</p>
+    </div>
+  </section>
+</main>
 
-   <div class="video-card">
-    <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600">
-    <h3>Music and entertainment</h3>
-    <p>STRIPON • Popular</p>
-   </div>
-
-   <div class="video-card">
-    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600">
-    <h3>Gaming world</h3>
-    <p>STRIPON • Gaming</p>
-   </div>
-
-   <div class="video-card">
-    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600">
-    <h3>Travel and adventure</h3>
-    <p>STRIPON • Explore</p>
-   </div>
-
-  </div>
- </div>
-
- <div class="section">
-  <h2>Popular Shorts</h2>
-  <div class="shorts-grid">
-   <div class="short-card">
-    <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=500">
-    <span>Explore life</span>
-   </div>
-   <div class="short-card">
-    <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500">
-    <span>Music vibes</span>
-   </div>
-  </div>
- </div>
-
- <div class="section">
-  <div class="create-box">
-   <h2>Share your creativity</h2>
-   <p style="color:#aaa">Upload photos, videos and music.</p>
-   <button onclick="showPage('posting')"
-   style="background:#ff3155;padding:12px;border-radius:9px;margin-top:14px">
-   ＋ Create post
-   </button>
-  </div>
- </div>
-
-</div>
-
-<!-- SHORTS -->
-<div id="shorts" class="page">
- <div class="section">
-  <h2>STRIPON Shorts</h2>
-  <p style="color:#aaa">Discover short videos from creators.</p>
-  <div id="shortList"></div>
- </div>
-</div>
-
-<!-- POSTING -->
-<div id="posting" class="page">
- <div class="section">
-  <h2>Create a post</h2>
-  <div class="create-box">
-   <p>Choose what you want to share</p>
-   <input id="postTitle" placeholder="Write a caption or title">
-   <input type="file" id="postFile"
-   accept="image/*,video/*,audio/*">
-   <div id="preview"></div>
-   <button onclick="publishPost()"
-   style="background:#ff3155;padding:13px;border-radius:9px;width:100%;margin-top:15px">
-   Publish post
-   </button>
-  </div>
- </div>
-</div>
-
-<!-- GAMING -->
-<div id="gaming" class="page">
- <div class="section">
-  <h2>STRIPON Gaming 🎮</h2>
-  <input placeholder="Search games..." id="gameSearch"
-  oninput="filterGames()">
-
-  <div id="games">
-   <div class="game">
-    <h3>CrazyGames</h3>
-    <p>Explore browser games.</p>
-    <button onclick="openGame('https://www.crazygames.com/')">Explore games</button>
-   </div>
-   <div class="game">
-    <h3>Poki</h3>
-    <p>Discover online games.</p>
-    <button onclick="openGame('https://poki.com/')">Explore games</button>
-   </div>
-   <div class="game">
-    <h3>Y8 Games</h3>
-    <p>Find more browser games.</p>
-    <button onclick="openGame('https://www.y8.com/')">Explore games</button>
-   </div>
-  </div>
- </div>
-</div>
-
-<!-- PROFILE -->
-<div id="profile" class="page">
- <div class="section">
-  <h2>Your profile</h2>
-  <div class="profile">
-   <div class="avatar">S</div>
-   <h2 id="username">STRIPON Creator</h2>
-   <p style="color:#aaa">Welcome to STRIPON</p>
-   <input id="newName" placeholder="Change username">
-   <button onclick="changeName()"
-   style="background:#ff3155;padding:12px;border-radius:8px;margin-top:10px">
-   Save profile
-   </button>
-   <h3 style="margin-top:20px">My posts</h3>
-   <p id="postCount">0 posts</p>
-  </div>
-  <h2>Privacy and security</h2>
-  <div class="game">
-   <p>Account privacy</p>
-   <p style="color:#aaa;margin-top:8px">Privacy controls will be connected to user accounts.</p>
-  </div>
-  <div class="game">
-   <p>Security settings</p>
-   <p style="color:#aaa;margin-top:8px">Login protection will be added with authentication.</p>
-  </div>
- </div>
-</div>
-
-<nav class="bottom">
- <button onclick="showPage('home')"><span>⌂</span>Home</button>
- <button onclick="showPage('shorts')"><span>▶</span>Shorts</button>
- <button onclick="showPage('posting')"><span>＋</span>Post</button>
- <button onclick="showPage('gaming')"><span>🎮</span>Gaming</button>
- <button onclick="showPage('profile')"><span>👤</span>Profile</button>
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="nav-item active" data-page="home"><span>⌂</span>Home</button>
+  <button class="nav-item" data-page="shorts"><span>▶</span>Shorts</button>
+  <button class="nav-item" data-page="posting"><span>＋</span>Post</button>
+  <button class="nav-item" data-page="gaming"><span>🎮</span>Gaming</button>
+  <button class="nav-item" data-page="profile"><span>●</span>Profile</button>
 </nav>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
-let posts=[];
+"use strict";
 
-function showPage(id,button){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- document.querySelectorAll('.categories button').forEach(b=>b.classList.remove('active'));
- if(button)button.classList.add('active');
+/*
+ STRIPON single-file GitHub Pages edition with Gaming Centre and creator-profile demo tools.
+ Uploaded video files are stored locally in IndexedDB on this device/browser.
+ To share videos and accounts between users, a real backend and authentication
+ service are required; GitHub Pages alone is static hosting.
+*/
+const DB_NAME = "stripon_local_db";
+const DB_VERSION = 1;
+const STORE_NAME = "videos";
+const starterVideos = [
+  {id:"starter-1",title:"Welcome to STRIPON",description:"Discover videos and creators.",category:"home",url:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",owner:"STRIPON"},
+  {id:"starter-2",title:"Explore the world",description:"Enjoy creative videos.",category:"shorts",url:"https://www.w3schools.com/html/mov_bbb.mp4",owner:"STRIPON"},
+  {id:"starter-3",title:"Gaming community",description:"Welcome gamers!",category:"gaming",url:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",owner:"STRIPON"}
+];
+const gameDirectory = [
+  {name:"Football games",category:"Football",provider:"Poki",url:"https://poki.com/en/football"},
+  {name:"Soccer games",category:"Football",provider:"CrazyGames",url:"https://www.crazygames.com/t/soccer"},
+  {name:"Racing games",category:"Racing",provider:"CrazyGames",url:"https://www.crazygames.com/t/racing"},
+  {name:"Car games",category:"Racing",provider:"Poki",url:"https://poki.com/en/car"},
+  {name:"Fighting games",category:"Fighting",provider:"CrazyGames",url:"https://www.crazygames.com/t/fighting"},
+  {name:"Motorbike games",category:"Motorbike",provider:"CrazyGames",url:"https://www.crazygames.com/t/motorcycle"},
+  {name:"Bike games",category:"Motorbike",provider:"Y8 Games",url:"https://www.y8.com/tags/bike"},
+  {name:"Puzzle games",category:"Puzzle",provider:"Poki",url:"https://poki.com/en/puzzle"},
+  {name:"Board games",category:"Board",provider:"Poki",url:"https://poki.com/en/board"},
+  {name:"Casual games",category:"Casual",provider:"CrazyGames",url:"https://www.crazygames.com/c/casual"},
+  {name:"Online multiplayer games",category:"Online",provider:"CrazyGames",url:"https://www.crazygames.com/t/multiplayer"},
+  {name:"Online games",category:"Online",provider:"Y8 Games",url:"https://www.y8.com/"}
+];
+
+let videos = [...starterVideos];
+let liked = [];
+let saved = [];
+let comments = {};
+let history = [];
+let playlists = [];
+let followers = 0;
+let following = 0;
+let subscriptions = 0;
+let gameFilter = "All";
+let user = {name:"STRIPON User",bio:"Welcome to my profile!",avatar:""};
+let currentLibrary = "uploads";
+let db = null;
+let selectedFile = null;
+let previewUrl = null;
+const objectUrls = new Map();
+
+const $ = id => document.getElementById(id);
+
+function toast(message){
+  const el=$("toast");
+  el.textContent=message;
+  el.style.display="block";
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>el.style.display="none",2600);
+}
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function openDatabase(){
+  return new Promise((resolve,reject)=>{
+    if(!("indexedDB" in window)){reject(new Error("IndexedDB is not available in this browser."));return;}
+    const request=indexedDB.open(DB_NAME,DB_VERSION);
+    request.onupgradeneeded=()=>{
+      const database=request.result;
+      if(!database.objectStoreNames.contains(STORE_NAME)) database.createObjectStore(STORE_NAME,{keyPath:"id"});
+    };
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error);
+  });
+}
+function dbRequest(mode,operation){
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE_NAME,mode);
+    const store=tx.objectStore(STORE_NAME);
+    let req;
+    try{req=operation(store);}catch(err){reject(err);return;}
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function loadUploadedVideos(){
+  const records=await dbRequest("readonly",store=>store.getAll());
+  for(const record of records){
+    const old=objectUrls.get(record.id);
+    if(old) URL.revokeObjectURL(old);
+    const url=URL.createObjectURL(record.blob);
+    objectUrls.set(record.id,url);
+    videos.push({...record,url});
+  }
+}
+function saveSmallData(){
+  const data={liked,saved,comments,history,user,playlists,followers,following,subscriptions};
+  try{localStorage.setItem("striponData",JSON.stringify(data));}
+  catch(error){toast("Could not save settings. Browser storage may be full.");}
+}
+function loadSmallData(){
+  try{
+    const data=JSON.parse(localStorage.getItem("striponData")||"null");
+    if(!data)return;
+    liked=Array.isArray(data.liked)?data.liked:[];
+    saved=Array.isArray(data.saved)?data.saved:[];
+    comments=data.comments&&typeof data.comments==="object"?data.comments:{};
+    history=Array.isArray(data.history)?data.history:[];
+    playlists=Array.isArray(data.playlists)?data.playlists:[];
+    followers=Number(data.followers)||0;following=Number(data.following)||0;subscriptions=Number(data.subscriptions)||0;
+    user=data.user&&typeof data.user==="object"?{...user,...data.user}:user;
+  }catch(error){console.warn("Could not read saved STRIPON settings.",error);}
+}
+function renderGameDirectory(){
+  const query=$("gameSearch").value.trim().toLowerCase();
+  const matches=gameDirectory.filter(game=>(gameFilter==="All"||game.category===gameFilter)&&(`${game.name} ${game.category} ${game.provider}`).toLowerCase().includes(query));
+  $("gameDirectory").innerHTML=matches.map(game=>`<a class="game-link" href="${game.url}" target="_blank" rel="noopener noreferrer"><strong>${escapeHTML(game.name)}</strong><span class="muted small">${escapeHTML(game.category)} · ${escapeHTML(game.provider)} · Open game site ↗</span></a>`).join("")||'<p class="empty">No games match your search.</p>';
+}
+function renderPlaylists(){
+  const area=$("playlistArea");
+  if(!playlists.length){area.innerHTML='<p class="muted small">No playlists yet. Create one above.</p>';return;}
+  area.innerHTML=playlists.map((list,index)=>`<div class="panel"><strong>${escapeHTML(list.name)}</strong><p class="muted small">${list.videoIds.length} saved item(s)</p><div class="actions"><button class="secondary" data-playlist-view="${index}">View playlist</button><button class="secondary" data-playlist-delete="${index}">Delete</button></div><div id="playlistItems${index}"></div></div>`).join("");
+}
+function createPlaylist(){
+  const name=$("playlistName").value.trim();
+  if(!name){toast("Enter a playlist name first.");return;}
+  playlists.push({name,videoIds:[]});$("playlistName").value="";saveSmallData();renderPlaylists();toast("Playlist created on this device.");
+}
+function renderHistory(){
+  const recent=history.map(id=>videos.find(video=>String(video.id)===String(id))).filter(Boolean);
+  $("historyVideos").innerHTML=recent.slice(0,12).map(videoCard).join("")||'<p class="empty">No recently watched videos yet.</p>';
+}
+function addVideoToPlaylist(videoId){
+  if(!playlists.length){toast("Create a playlist in your profile first.");return;}
+  const choice=prompt("Enter the number of the playlist:\n"+playlists.map((p,i)=>`${i+1}. ${p.name}`).join("\n"));
+  const index=Number(choice)-1;
+  if(!Number.isInteger(index)||!playlists[index])return;
+  if(!playlists[index].videoIds.includes(videoId))playlists[index].videoIds.push(videoId);
+  saveSmallData();renderPlaylists();toast("Added to playlist.");
+}
+function viewPlaylist(index){
+  const list=playlists[index];if(!list)return;
+  const items=list.videoIds.map(id=>videos.find(video=>String(video.id)===String(id))).filter(Boolean);
+  const target=$("playlistItems"+index);
+  if(target)target.innerHTML=items.map(videoCard).join("")||'<p class="muted small">This playlist is empty. Use Add to playlist on a video.</p>';
+}
+function reportProblem(){
+  const detail=prompt("Describe the problem you want to report:");
+  if(!detail||!detail.trim())return;
+  const subject=encodeURIComponent("STRIPON app report");
+  const body=encodeURIComponent(`STRIPON report\nUsername: ${user.name}\n\nProblem: ${detail.trim().slice(0,1500)}\n\nPlease review this report.`);
+  location.href=`mailto:finlayomari3@gmail.com?subject=${subject}&body=${body}`;
+}
+function logoutDemo(){
+  if(!confirm("Log out of this local STRIPON demo on this device? Your saved demo data will remain here."))return;
+  sessionStorage.setItem("striponLoggedOut","1");
+  toast("You have logged out of this demo session.");
+  navigate("home");
+}
+function showPrivacyInfo(){
+  alert("Privacy in this demo: profile details, likes, saved videos, playlists and history are stored in this browser/device. They are not publicly shared or synced. Do not enter sensitive personal information. Real sign-in, reporting workflows and account privacy controls need a secure backend.");
 }
 
-function publishPost(){
- const file=document.getElementById('postFile').files[0];
- const title=document.getElementById('postTitle').value.trim();
-
- if(!file||!title){
-  alert('Please add a title and select a file.');
-  return;
- }
-
- const url=URL.createObjectURL(file);
- posts.unshift({title,url,type:file.type});
- displayPosts();
-
- document.getElementById('postTitle').value='';
- document.getElementById('postFile').value='';
- document.getElementById('preview').innerHTML='';
- alert('Post added to this browser session.');
- showPage('home');
+function navigate(page){
+  document.querySelectorAll(".page").forEach(section=>section.classList.toggle("active",section.id===page));
+  document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.page===page));
+  if(page==="profile") updateProfile();
+  if(page==="gaming"||page==="shorts"||page==="home") renderAll();
 }
-
-document.getElementById('postFile').addEventListener('change',function(){
- const file=this.files[0];
- if(!file)return;
- const url=URL.createObjectURL(file);
- const preview=document.getElementById('preview');
- preview.innerHTML='';
-
- let media;
- if(file.type.startsWith('image/')){
-  media=document.createElement('img');
-  media.style.width='100%';
- }else if(file.type.startsWith('video/')){
-  media=document.createElement('video');
-  media.controls=true;
-  media.style.width='100%';
- }else if(file.type.startsWith('audio/')){
-  media=document.createElement('audio');
-  media.controls=true;
-  media.style.width='100%';
- }else{
-  alert('Choose an image, video or audio file.');
-  return;
- }
- media.src=url;
- preview.appendChild(media);
+function toggleTheme(){
+  document.body.classList.toggle("light");
+  localStorage.setItem("striponTheme",document.body.classList.contains("light")?"light":"dark");
+}function videoCard(video){
+  const isLiked=liked.includes(video.id);
+  const isSaved=saved.includes(video.id);
+  const commentsCount=(comments[video.id]||[]).length;
+  return `<article class="video-card">
+    <video src="${escapeHTML(video.url)}" controls playsinline preload="metadata" data-video-id="${escapeHTML(video.id)}"></video>
+    <div class="video-info">
+      <h3>${escapeHTML(video.title)}</h3>
+      <p class="muted small">${escapeHTML(video.owner||"STRIPON")} · ${escapeHTML(video.description||"")}</p>
+      <div class="actions">
+        <button class="${isLiked?"selected":""}" data-action="like" data-id="${escapeHTML(video.id)}">♥ ${isLiked?"Liked":"Like"}</button>
+        <button class="${isSaved?"selected":""}" data-action="save" data-id="${escapeHTML(video.id)}">☆ ${isSaved?"Saved":"Save"}</button>
+        <button data-action="comment" data-id="${escapeHTML(video.id)}">Comment (${commentsCount})</button>
+        <button data-action="playlist" data-id="${escapeHTML(video.id)}">＋ Playlist</button>
+      </div>
+    </div>
+  </article>`;
+}
+function shortCard(video){
+  return `<article class="short-card">
+    <video src="${escapeHTML(video.url)}" controls playsinline loop preload="metadata" data-video-id="${escapeHTML(video.id)}"></video>
+    <div class="short-details">
+      <strong>${escapeHTML(video.title)}</strong>
+      <p>${escapeHTML(video.description||"")}</p>
+      <div class="actions">
+        <button data-action="like" data-id="${escapeHTML(video.id)}">♥ ${liked.includes(video.id)?"Liked":"Like"}</button>
+        <button data-action="save" data-id="${escapeHTML(video.id)}">☆ ${saved.includes(video.id)?"Saved":"Save"}</button>
+      </div>
+    </div>
+  </article>`;
+}
+function getSearchMatches(){
+  const query=$("searchInput").value.trim().toLowerCase();
+  return videos.filter(video=>(`${video.title} ${video.description||""} ${video.owner||""}`).toLowerCase().includes(query));
+}
+function renderAll(){
+  const matches=getSearchMatches();
+  const home=matches.filter(v=>v.category!=="gaming" && v.category!=="shorts");
+  $("allVideos").innerHTML=home.map(videoCard).join("")||'<div class="empty">No home videos found. Upload a video to get started.</div>';
+  $("gamingVideos").innerHTML=matches.filter(v=>v.category==="gaming").map(videoCard).join("")||'<div class="empty">No gaming videos yet. Choose “Gaming video” when uploading.</div>';
+  $("shortVideos").innerHTML=matches.filter(v=>v.category==="shorts").map(shortCard).join("")||'<div class="empty">No Shorts yet. Choose “Shorts” when uploading.</div>';
+}
+function updateProfile(){
+  $("username").value=user.name||"STRIPON User";
+  $("bio").value=user.bio||"";
+  $("avatar").innerHTML=user.avatar?`<img src="${user.avatar}" alt="Profile picture">`:"S";
+  $("uploadCount").textContent=videos.filter(v=>v.owner===user.name && !String(v.id).startsWith("starter-")).length;
+  $("likeCount").textContent=liked.length;
+  $("savedCount").textContent=saved.length;
+  $("followersCount").textContent=followers;
+  $("followingCount").textContent=following;
+  $("subscriptionsCount").textContent=subscriptions;
+  $("creatorUploads").textContent=videos.filter(v=>v.owner===user.name&&!String(v.id).startsWith("starter-")).length;
+  $("creatorLikes").textContent="—";
+  renderLibrary();renderPlaylists();renderHistory();
+}
+function renderLibrary(){
+  let list=[];
+  if(currentLibrary==="uploads")list=videos.filter(v=>v.owner===user.name && !String(v.id).startsWith("starter-"));
+  if(currentLibrary==="liked")list=videos.filter(v=>liked.includes(v.id));
+  if(currentLibrary==="saved")list=videos.filter(v=>saved.includes(v.id));
+  $("library").innerHTML=list.map(videoCard).join("")||'<div class="empty">Nothing here yet.</div>';
+}
+async function publishVideo(){
+  const file=selectedFile;
+  const title=$("videoTitle").value.trim();
+  const description=$("videoDescription").value.trim();
+  const category=$("videoCategory").value;
+  if(!title||!file){toast("Enter a title and choose a video.");return;}
+  if(!file.type.startsWith("video/")){toast("Please choose a valid video file.");return;}
+  if(file.size>100*1024*1024){toast("The demo upload limit is 100 MB.");return;}
+  const id="upload-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);
+  const record={id,title,description,category,owner:user.name,blob:file,createdAt:Date.now()};
+  try{
+    await dbRequest("readwrite",store=>store.add(record));
+    const url=URL.createObjectURL(file);
+    objectUrls.set(id,url);
+    videos.unshift({...record,url});
+    $("videoTitle").value="";
+    $("videoDescription").value="";
+    $("videoFile").value="";
+    $("preview").hidden=true;
+    $("preview").removeAttribute("src");
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+    selectedFile=null;
+    renderAll();updateProfile();navigate(category==="shorts"?"shorts":category==="gaming"?"gaming":"home");
+    toast("Video saved on this device.");
+  }catch(error){
+    console.error(error);
+    toast("Could not save video. Check available device storage.");
+  }
+}
+async function saveProfile(){
+  const name=$("username").value.trim()||"STRIPON User";
+  const bio=$("bio").value.trim();
+  const file=$("avatarFile").files[0];
+  if(file){
+    if(!file.type.startsWith("image/")||file.size>5*1024*1024){toast("Choose an image smaller than 5 MB.");return;}
+    const reader=new FileReader();
+    reader.onload=()=>{user={...user,name,bio,avatar:String(reader.result)};saveSmallData();updateProfile();$("avatarFile").value="";toast("Profile saved on this device.");};
+    reader.onerror=()=>toast("Could not read that image.");
+    reader.readAsDataURL(file);
+  }else{
+    user={...user,name,bio};saveSmallData();updateProfile();toast("Profile saved on this device.");
+  }
+}
+function toggleLike(id){
+  liked=liked.includes(id)?liked.filter(item=>item!==id):[...liked,id];
+  saveSmallData();renderAll();updateProfile();
+}
+function toggleSave(id){
+  saved=saved.includes(id)?saved.filter(item=>item!==id):[...saved,id];
+  saveSmallData();renderAll();updateProfile();
+}
+function addComment(id){
+  const message=prompt("Write your comment:");
+  if(!message||!message.trim())return;
+  comments[id]=comments[id]||[];
+  comments[id].push(message.trim().slice(0,300));
+  saveSmallData();renderAll();renderLibrary();toast("Comment saved on this device.");
+}
+async function clearLocalData(){
+  if(!confirm("Delete this device's STRIPON demo videos, likes, comments and profile? This cannot be undone."))return;
+  try{
+    await dbRequest("readwrite",store=>store.clear());
+    objectUrls.forEach(url=>URL.revokeObjectURL(url));objectUrls.clear();
+    localStorage.removeItem("striponData");
+    localStorage.removeItem("striponTheme");
+    location.reload();
+  }catch(error){toast("Could not clear local data.");}
+}
+$("searchInput").addEventListener("input",renderAll);
+$("themeButton").addEventListener("click",toggleTheme);
+$("profileThemeButton").addEventListener("click",toggleTheme);
+$("publishButton").addEventListener("click",publishVideo);
+$("saveProfileButton").addEventListener("click",saveProfile);
+$("clearDataButton").addEventListener("click",clearLocalData);
+$("gameSearch").addEventListener("input",renderGameDirectory);
+document.querySelectorAll("[data-game-filter]").forEach(button=>button.addEventListener("click",()=>{
+  gameFilter=button.dataset.gameFilter;
+  document.querySelectorAll("[data-game-filter]").forEach(item=>item.classList.toggle("selected",item===button));
+  renderGameDirectory();
+}));
+$("createPlaylistButton").addEventListener("click",createPlaylist);
+$("creatorUploadsButton").addEventListener("click",()=>{currentLibrary="uploads";renderLibrary();$("library").scrollIntoView({behavior:"smooth",block:"start"});});
+$("clearHistoryButton").addEventListener("click",()=>{if(confirm("Clear your watching history on this device?")){history=[];saveSmallData();renderHistory();toast("Watching history cleared.");}});
+$("followDemoButton").addEventListener("click",()=>{following++;followers++;saveSmallData();updateProfile();toast("Demo follow recorded locally.");});
+$("subscribeDemoButton").addEventListener("click",()=>{subscriptions++;saveSmallData();updateProfile();toast("Demo subscription recorded locally.");});
+$("reportButton").addEventListener("click",reportProblem);
+$("logoutButton").addEventListener("click",logoutDemo);
+$("privacyButton").addEventListener("click",showPrivacyInfo);
+document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>navigate(button.dataset.page)));
+document.querySelectorAll("[data-library]").forEach(button=>button.addEventListener("click",()=>{currentLibrary=button.dataset.library;renderLibrary();}));
+document.addEventListener("click",event=>{
+  const button=event.target.closest("button");
+  if(!button)return;
+  if(button.dataset.playlistView!==undefined){viewPlaylist(Number(button.dataset.playlistView));return;}
+  if(button.dataset.playlistDelete!==undefined){const index=Number(button.dataset.playlistDelete);if(confirm("Delete this playlist?")){playlists.splice(index,1);saveSmallData();renderPlaylists();}return;}
+  if(!button.dataset.action)return;
+  const id=button.dataset.id;
+  if(button.dataset.action==="like")toggleLike(id);
+  if(button.dataset.action==="save")toggleSave(id);
+  if(button.dataset.action==="comment")addComment(id);
+  if(button.dataset.action==="playlist")addVideoToPlaylist(id);
+});
+document.addEventListener("play",event=>{
+  const video=event.target;
+  if(video instanceof HTMLVideoElement && video.dataset.videoId){
+    history=[video.dataset.videoId,...history.filter(id=>id!==video.dataset.videoId)].slice(0,100);
+    saveSmallData();
+  }
+},true);
+$("videoFile").addEventListener("change",()=>{
+  const file=$("videoFile").files[0];
+  selectedFile=file||null;
+  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+  $("preview").hidden=true;
+  if(!file)return;
+  if(!file.type.startsWith("video/")){toast("Please choose a video file.");$("videoFile").value="";selectedFile=null;return;}
+  if(file.size>100*1024*1024){toast("The demo upload limit is 100 MB.");$("videoFile").value="";selectedFile=null;return;}
+  previewUrl=URL.createObjectURL(file);
+  $("preview").src=previewUrl;
+  $("preview").hidden=false;
+});
+window.addEventListener("beforeunload",()=>{
+  if(previewUrl)URL.revokeObjectURL(previewUrl);
 });
 
-function displayPosts(){
- const grid=document.getElementById('videoGrid');
- const shorts=document.getElementById('shortList');
-
- posts.forEach(post=>{
-  const card=document.createElement('div');
-  card.className='video-card';
-
-  let media;
-  if(post.type.startsWith('image/')){
-   media=document.createElement('img');
-  }else if(post.type.startsWith('video/')){
-   media=document.createElement('video');
-   media.controls=true;
-   media.style.width='100%';
-  }else{
-   media=document.createElement('audio');
-   media.controls=true;
-   media.style.width='100%';
+async function init(){
+  loadSmallData();
+  if(localStorage.getItem("striponTheme")==="light")document.body.classList.add("light");
+  try{
+    db=await openDatabase();
+    await loadUploadedVideos();
+  }catch(error){
+    console.error(error);
+    toast("Device video storage is unavailable. Browsing starter videos may still work.");
   }
-
-  media.src=post.url;
-  const heading=document.createElement('h3');
-  heading.textContent=post.title;
-  const caption=document.createElement('p');
-  caption.textContent='Posted on STRIPON';
-
-  card.append(media,heading,caption);
-  grid.prepend(card.cloneNode(true));
-  if(post.type.startsWith('video/'))shorts.prepend(card);
- });
-
- document.getElementById('postCount').textContent=posts.length+' posts';
+  renderAll();renderGameDirectory();updateProfile();
 }
-
-function searchVideos(){
- const query=document.getElementById('search').value.toLowerCase();
- document.querySelectorAll('#videoGrid .video-card').forEach(card=>{
-  card.style.display=card.textContent.toLowerCase().includes(query)?'block':'none';
- });
-}
-
-function filterGames(){
- const query=document.getElementById('gameSearch').value.toLowerCase();
- document.querySelectorAll('#games .game').forEach(game=>{
-  game.style.display=game.textContent.toLowerCase().includes(query)?'block':'none';
- });
-}
-
-function changeName(){
- const name=document.getElementById('newName').value.trim();
- if(!name)return alert('Enter a username');
- document.getElementById('username').textContent=name;
- document.getElementById('newName').value='';
-}
-
-function openGame(url){
- window.open(url,'_blank','noopener,noreferrer');
-}
+init();
 </script>
-
 </body>
-  </html>
- 
+</html>
