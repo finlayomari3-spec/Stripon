@@ -602,3 +602,250 @@ init();
 </script>
 </body>
 </html>
+
+<!-- STRIPON GAMING CENTRE -->
+<section id="stripon-gaming">
+<style>
+#stripon-gaming {
+  background:#10091d;
+  color:white;
+  min-height:100vh;
+  padding:16px;
+  font-family:Arial,sans-serif;
+}
+#stripon-gaming * {box-sizing:border-box}
+.sg-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.sg-logo {font-size:25px;font-weight:bold;color:#b879ff}
+.sg-search {
+  width:100%;
+  padding:13px;
+  border:1px solid #7040a5;
+  border-radius:12px;
+  background:#211433;
+  color:white;
+  margin:18px 0;
+}
+.sg-categories {
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding:8px 0 15px;
+}
+.sg-category {
+  background:#28163e;
+  color:white;
+  border:1px solid #7040a5;
+  padding:10px 15px;
+  border-radius:20px;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.sg-category.active {background:#8538d9}
+.sg-title {font-size:20px;margin:20px 0 12px}
+.sg-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+.sg-card {
+  background:#211433;
+  border-radius:13px;
+  overflow:hidden;
+  cursor:pointer;
+  border:1px solid #38204e;
+}
+.sg-thumb {
+  height:115px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:55px;
+  background:linear-gradient(135deg,#57208e,#a33be3);
+}
+.sg-info {padding:11px}
+.sg-info h3 {font-size:14px;margin:0 0 7px}
+.sg-info p {font-size:12px;color:#c5b2d8;margin:0}
+.sg-actions {
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.sg-btn {
+  border:0;
+  border-radius:8px;
+  padding:9px;
+  color:white;
+  background:#873de0;
+  cursor:pointer;
+  flex:1;
+}
+.sg-fav {background:#40265b}
+#sg-player {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:#090510;
+  padding:12px;
+  overflow:auto;
+}
+.sg-player-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+.sg-close {
+  background:#a12e64;
+  color:white;
+  border:0;
+  padding:10px 16px;
+  border-radius:9px;
+}
+#sg-frame {
+  width:100%;
+  height:75vh;
+  border:0;
+  background:white;
+  border-radius:12px;
+}
+.sg-empty {color:#c5b2d8;padding:20px 0}
+@media(min-width:650px) {
+  .sg-grid {grid-template-columns:repeat(4,minmax(0,1fr))}
+  .sg-thumb {height:150px}
+}
+</style>
+
+<div class="sg-header">
+  <div class="sg-logo">🎮 STRIPON GAMES</div>
+  <div>Gaming Centre</div>
+</div>
+
+<input id="sg-search" class="sg-search"
+placeholder="🔎 Search thousands of games..."
+oninput="sgRender()">
+
+<div class="sg-categories" id="sg-categories">
+  <button class="sg-category active" onclick="sgCategory('All',this)">All Games</button>
+  <button class="sg-category" onclick="sgCategory('Racing',this)">🏎️ Racing</button>
+  <button class="sg-category" onclick="sgCategory('Sports',this)">⚽ Sports</button>
+  <button class="sg-category" onclick="sgCategory('Adventure',this)">🗺️ Adventure</button>
+  <button class="sg-category" onclick="sgCategory('Puzzle',this)">🧩 Puzzle</button>
+  <button class="sg-category" onclick="sgCategory('Arcade',this)">👾 Arcade</button>
+  <button class="sg-category" onclick="sgCategory('Strategy',this)">♟️ Strategy</button>
+  <button class="sg-category" onclick="sgCategory('Favourites',this)">❤️ Favourites</button>
+</div>
+
+<h2 class="sg-title">🔥 Popular Games</h2>
+<div class="sg-grid" id="sg-grid"></div>
+
+<div id="sg-player">
+  <div class="sg-player-top">
+    <strong id="sg-playing">STRIPON GAME</strong>
+    <button class="sg-close" onclick="sgClose()">✕ Close Game</button>
+  </div>
+  <iframe id="sg-frame"
+  title="STRIPON game player"
+  allow="fullscreen; autoplay; gamepad"
+  allowfullscreen></iframe>
+  <p>Game loading area - supported games play here.</p>
+</div>
+
+<script>
+(function(){
+const games = [
+ {name:"Racing Challenge",cat:"Racing",icon:"🏎️",url:"https://html5.gamedistribution.com/"},
+ {name:"Football Challenge",cat:"Sports",icon:"⚽",url:"https://html5.gamedistribution.com/"},
+ {name:"Motorbike Adventure",cat:"Racing",icon:"🏍️",url:"https://html5.gamedistribution.com/"},
+ {name:"Puzzle Master",cat:"Puzzle",icon:"🧩",url:"https://html5.gamedistribution.com/"},
+ {name:"Space Adventure",cat:"Adventure",icon:"🚀",url:"https://html5.gamedistribution.com/"},
+ {name:"Arcade World",cat:"Arcade",icon:"👾",url:"https://html5.gamedistribution.com/"},
+ {name:"Strategy Kingdom",cat:"Strategy",icon:"🏰",url:"https://html5.gamedistribution.com/"},
+ {name:"Basketball Stars",cat:"Sports",icon:"🏀",url:"https://html5.gamedistribution.com/"}
+];
+
+let category="All";
+let favourites=JSON.parse(localStorage.getItem("sg-favourites")||"[]");
+let history=JSON.parse(localStorage.getItem("sg-history")||"[]");
+
+window.sgCategory=function(cat,button){
+ category=cat;
+ document.querySelectorAll("#sg-categories button")
+ .forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ sgRender();
+};
+
+window.sgRender=function(){
+ const search=document.getElementById("sg-search").value.toLowerCase();
+ const grid=document.getElementById("sg-grid");
+ grid.innerHTML="";
+ const filtered=games.filter(g=>{
+  const match=g.name.toLowerCase().includes(search);
+  const cat=category==="All"||g.cat===category||
+   (category==="Favourites"&&favourites.includes(g.name));
+  return match&&cat;
+ });
+ if(!filtered.length){
+  grid.innerHTML='<p class="sg-empty">No games found.</p>';
+  return;
+ }
+ filtered.forEach(g=>{
+  const card=document.createElement("div");
+  card.className="sg-card";
+  const thumb=document.createElement("div");
+  thumb.className="sg-thumb";
+  thumb.textContent=g.icon;
+  const info=document.createElement("div");
+  info.className="sg-info";
+  const heading=document.createElement("h3");
+  heading.textContent=g.name;
+  const description=document.createElement("p");
+  description.textContent=g.cat+" Game";
+  const actions=document.createElement("div");
+  actions.className="sg-actions";
+  const play=document.createElement("button");
+  play.className="sg-btn";
+  play.textContent="▶ Play";
+  play.onclick=()=>sgPlay(g);
+  const fav=document.createElement("button");
+  fav.className="sg-btn sg-fav";
+  fav.textContent=favourites.includes(g.name)?"❤️":"♡";
+  fav.onclick=()=>{
+   favourites=favourites.includes(g.name)
+    ?favourites.filter(x=>x!==g.name)
+    :[...favourites,g.name];
+   localStorage.setItem("sg-favourites",JSON.stringify(favourites));
+   sgRender();
+  };
+  actions.append(play,fav);
+  info.append(heading,description,actions);
+  card.append(thumb,info);
+  grid.appendChild(card);
+ });
+};
+
+window.sgPlay=function(game){
+ document.getElementById("sg-player").style.display="block";
+ document.getElementById("sg-playing").textContent=game.name;
+ document.getElementById("sg-frame").src=game.url;
+ history=[game.name,...history.filter(x=>x!==game.name)].slice(0,30);
+ localStorage.setItem("sg-history",JSON.stringify(history));
+};
+
+window.sgClose=function(){
+ document.getElementById("sg-frame").src="about:blank";
+ document.getElementById("sg-player").style.display="none";
+};
+
+sgRender();
+})();
+</script>
+</section>
+<!-- END STRIPON GAMING CENTRE -->
