@@ -1,556 +1,351 @@
-y<!DOCTYPE html>  <html lang="en">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<meta name="theme-color" content="#240046">  
-<title>STRIPON</title>  <style>  
-:root {  
-  --main-background: #240046;  
-  --royal-purple: #5B21B6;  
-  --electric-purple: #7B2CBF;  
-  --energy-blue: #2563EB;  
-  --neon-lavender: #C084FC;  
-  --white: #FFFFFF;  
-}  
-  
-* {  
-  box-sizing: border-box;  
-  margin: 0;  
-  padding: 0;  
-}  
-  
-body {  
-  font-family: Arial, sans-serif;  
-  color: var(--white);  
-  min-height: 100vh;  
-  overflow-x: hidden;  
-  background:  
-    radial-gradient(circle at 50% 0%, #53118C 0%, transparent 40%),  
-    radial-gradient(circle at 100% 50%, #172B73 0%, transparent 35%),  
-    linear-gradient(145deg, #240046, #19002F 65%, #100020);  
-}  
-  
-/* HEADER AND STRIPON BRAND */  
-  
-header {  
-  min-height: 105px;  
-  padding: 15px;  
-  display: flex;  
-  justify-content: center;  
-  align-items: center;  
-  position: sticky;  
-  top: 0;  
-  z-index: 30;  
-  overflow: hidden;  
-  background: linear-gradient(120deg, #240046, #3B0764, #16002E);  
-  border-bottom: 1px solid rgba(192,132,252,0.5);  
-  box-shadow: 0 5px 25px rgba(123,44,191,0.25);  
-}  
-  
-header::before {  
-  content: "";  
-  position: absolute;  
-  width: 230px;  
-  height: 230px;  
-  border-radius: 50%;  
-  border: 2px solid rgba(168,85,247,0.25);  
-  box-shadow: 0 0 35px #7B2CBF;  
-  pointer-events: none;  
-}  
-  
-.brand {  
-  display: flex;  
-  align-items: center;  
-  justify-content: center;  
-  gap: 13px;  
-  position: relative;  
-  z-index: 2;  
-}  
-  
-.s-logo {  
-  width: 72px;  
-  height: 72px;  
-  filter:  
-    drop-shadow(0 0 7px #FFFFFF)  
-    drop-shadow(0 0 15px #C084FC)  
-    drop-shadow(0 0 25px #7B2CBF)  
-    drop-shadow(0 0 35px #2563EB);  
-}  
-  
-.s-logo svg {  
-  width: 100%;  
-  height: 100%;  
-}  
-  
-.brand-name {  
-  font-size: clamp(27px, 7vw, 42px);  
-  font-weight: 1000;  
-  letter-spacing: 3px;  
-  color: #FFFFFF;  
-  text-shadow:  
-    0 0 5px #FFFFFF,  
-    0 0 12px #C084FC,  
-    0 0 25px #7B2CBF,  
-    0 0 35px #2563EB;  
-}  
-  
-/* MAIN APP */  
-  
-main {  
-  width: 100%;  
-  max-width: 900px;  
-  min-height: 75vh;  
-  margin: auto;  
-  padding: 22px 15px 115px;  
-}  
-  
-/* HOME BANNER */  
-  
-.explore-banner {  
-  min-height: 145px;  
-  padding: 27px 23px;  
-  margin-bottom: 30px;  
-  border-radius: 24px;  
-  position: relative;  
-  overflow: hidden;  
-  background:  
-    linear-gradient(120deg, #7B2CBF, #3B0764 55%, #173A91);  
-  border: 1px solid #C084FC;  
-  box-shadow:  
-    0 0 15px rgba(123,44,191,0.6),  
-    0 0 35px rgba(37,99,235,0.2),  
-    inset 0 0 25px rgba(255,255,255,0.08);  
-}  
-  
-.explore-banner::after {  
-  content: "✦";  
-  position: absolute;  
-  right: 22px;  
-  top: 15px;  
-  font-size: 65px;  
-  color: white;  
-  text-shadow:  
-    0 0 10px white,  
-    0 0 25px #C084FC,  
-    0 0 40px #2563EB;  
-}  
-  
-.explore-banner h2 {  
-  font-size: 30px;  
-  margin-bottom: 12px;  
-  text-shadow: 0 0 12px #C084FC;  
-}  
-  
-.explore-banner p {  
-  font-size: 15px;  
-  color: #F3E8FF;  
-}  
-  
-.section-title {  
-  font-size: 21px;  
-  font-weight: bold;  
-  margin: 25px 0 18px;  
-  color: #FFFFFF;  
-  text-shadow: 0 0 12px #7B2CBF;  
-}  
-  
-/* HOME CATEGORY CARDS */  
-  
-.categories {  
-  display: grid;  
-  grid-template-columns: repeat(2, minmax(0, 1fr));  
-  gap: 16px;  
-}  
-  
-.category {  
-  min-height: 165px;  
-  border-radius: 23px;  
-  padding: 17px 10px;  
-  display: flex;  
-  flex-direction: column;  
-  justify-content: center;  
-  align-items: center;  
-  gap: 15px;  
-  cursor: pointer;  
-  background:  
-    linear-gradient(145deg, #7026B5, #3B0764 65%, #20246D);  
-  border: 1px solid rgba(192,132,252,0.8);  
-  box-shadow:  
-    0 7px 18px rgba(0,0,0,0.25),  
-    0 0 12px rgba(123,44,191,0.3),  
-    inset 0 0 20px rgba(255,255,255,0.05);  
-  transition: transform 0.2s, box-shadow 0.2s;  
-}  
-  
-.category:active {  
-  transform: scale(0.96);  
-  box-shadow: 0 0 25px #A855F7;  
-}  
-  
-.icon-box {  
-  width: 72px;  
-  height: 72px;  
-  border-radius: 22px;  
-  display: flex;  
-  align-items: center;  
-  justify-content: center;  
-  background:  
-    linear-gradient(135deg, #C084FC, #7B2CBF 50%, #2563EB);  
-  border: 1px solid rgba(255,255,255,0.35);  
-  box-shadow:  
-    0 0 12px #A855F7,  
-    0 0 25px rgba(37,99,235,0.5),  
-    inset 0 0 15px rgba(255,255,255,0.2);  
-}  
-  
-.icon-box svg {  
-  width: 39px;  
-  height: 39px;  
-  stroke: #FFFFFF;  
-  fill: none;  
-  stroke-width: 1.8;  
-  stroke-linecap: round;  
-  stroke-linejoin: round;  
-  filter: drop-shadow(0 0 5px #FFFFFF);  
-}  
-  
-.category-name {  
-  color: #FFFFFF;  
-  font-size: 15px;  
-  font-weight: bold;  
-  letter-spacing: 0.4px;  
-  text-shadow: 0 0 8px #C084FC;  
-}  
-  
-/* PROFILE CARD */  
-  
-.category.profile-card {  
-  grid-column: 1 / -1;  
-  min-height: 115px;  
-  flex-direction: row;  
-}  
-  
-/* EMPTY SECTIONS */  
-  
-.empty-section {  
-  display: none;  
-  min-height: 65vh;  
-  padding: 35px 12px;  
-  text-align: center;  
-  align-items: center;  
-  flex-direction: column;  
-}  
-  
-.empty-section h2 {  
-  font-size: 28px;  
-  color: #FFFFFF;  
-  margin-bottom: 14px;  
-  text-shadow:  
-    0 0 8px #C084FC,  
-    0 0 20px #7B2CBF;  
-}  
-  
-.empty-section p {  
-  color: #D8B4FE;  
-  font-size: 15px;  
-}  
-  
-/* BOTTOM NAVIGATION */  
-  
-.bottom-nav {  
-  position: fixed;  
-  bottom: 0;  
-  left: 0;  
-  width: 100%;  
-  min-height: 78px;  
-  padding: 7px 2px;  
-  display: flex;  
-  justify-content: space-around;  
-  align-items: center;  
-  z-index: 50;  
-  background: rgba(25,0,50,0.96);  
-  border-top: 1px solid #A855F7;  
-  box-shadow:  
-    0 -5px 20px rgba(123,44,191,0.3),  
-    0 -2px 35px rgba(37,99,235,0.15);  
-  backdrop-filter: blur(15px);  
-}  
-  
-.nav-item {  
-  flex: 1;  
-  min-width: 0;  
-  height: 65px;  
-  display: flex;  
-  align-items: center;  
-  justify-content: center;  
-  flex-direction: column;  
-  gap: 5px;  
-  border-radius: 13px;  
-  color: #C084FC;  
-  font-size: 10px;  
-  cursor: pointer;  
-  transition: 0.2s;  
-  -webkit-tap-highlight-color: transparent;  
-}  
-  
-.nav-item svg {  
-  width: 25px;  
-  height: 25px;  
-  stroke: currentColor;  
-  fill: none;  
-  stroke-width: 1.8;  
-  stroke-linecap: round;  
-  stroke-linejoin: round;  
-}  
-  
-.nav-item.active {  
-  color: #FFFFFF;  
-  background: linear-gradient(  
-    180deg,  
-    rgba(123,44,191,0.35),  
-    rgba(37,99,235,0.12)  
-  );  
-  box-shadow:  
-    inset 0 -3px 0 #C084FC,  
-    0 0 15px rgba(123,44,191,0.3);  
-  text-shadow: 0 0 10px #C084FC;  
-}  
-  
-.nav-item.active svg {  
-  filter:  
-    drop-shadow(0 0 5px #FFFFFF)  
-    drop-shadow(0 0 10px #A855F7);  
-}  
-  
-/* MOBILE DISPLAY */  
-  
-@media (max-width: 380px) {  
-  header {  
-    min-height: 92px;  
-  }  
-  
-  .s-logo {  
-    width: 60px;  
-    height: 60px;  
-  }  
-  
-  .brand-name {  
-    letter-spacing: 2px;  
-  }  
-  
-  .category {  
-    min-height: 145px;  
-  }  
-  
-  .icon-box {  
-    width: 62px;  
-    height: 62px;  
-  }  
-  
-  .nav-item {  
-    font-size: 9px;  
-  }  
-  
-  .nav-item svg {  
-    width: 22px;  
-    height: 22px;  
-  }  
-}  
-</style>  </head>  <body>  <!-- STRIPON BRAND HEADER -->  <header>  
-  <div class="brand">  <div class="s-logo">  
-  <svg viewBox="0 0 100 100">  
-    <defs>  
-      <linearGradient id="sGradient" x1="0" y1="0" x2="1" y2="1">  
-        <stop offset="0%" stop-color="#F0ABFC"/>  
-        <stop offset="45%" stop-color="#A855F7"/>  
-        <stop offset="100%" stop-color="#2563EB"/>  
-      </linearGradient>  
-    </defs>  
 
-    <path  
-      d="M72 20 C60 8 30 10 24 29  
-      C16 50 48 48 66 57  
-      C88 68 72 91 48 91  
-      C33 91 21 84 16 76"  
-      stroke="url(#sGradient)"  
-      stroke-width="13"  
-      fill="none"  
-      stroke-linecap="round"  
-    />  
-  </svg>  
-</div>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#240046">
+<title>STRIPON</title>
 
-<span class="brand-name">STRIPON</span>
-
-  </div>  
-</header>  <main>    <!-- HOME PAGE -->    <section id="homeSection">  <div class="explore-banner">  
-  <h2>Explore</h2>  
-  <p>Discover. Connect. Enjoy.</p>  
-</div>  
-
-<h2 class="section-title">Discover STRIPON</h2>  
-
-<div class="categories">  
-
-  <!-- HOME -->  
-
-  <div class="category" onclick="openSection('Home')">  
-    <div class="icon-box">  
-      <svg viewBox="0 0 24 24">  
-        <path d="M3 10.5L12 3l9 7.5"/>  
-        <path d="M5 9v12h14V9"/>  
-        <path d="M9 21v-7h6v7"/>  
-      </svg>  
-    </div>  
-    <span class="category-name">Home</span>  
-  </div>  
-
-  <!-- SHORTS -->  
-
-  else if (section === "Shorts") {
-    window.location.href = "shorts.html";
-    return;
+<style>
+:root {
+  --bg: #16002E;
+  --purple: #240046;
+  --electric: #7B2CBF;
+  --lavender: #C084FC;
+  --blue: #2563EB;
+  --white: #FFFFFF;
 }
 
-  <!-- POSTING -->  
-
-  <div class="category" onclick="openSection('Posting')">  
-    <div class="icon-box">  
-      <svg viewBox="0 0 24 24">  
-        <rect x="3" y="3" width="18" height="18" rx="4"/>  
-        <path d="M12 8v8M8 12h8"/>  
-      </svg>  
-    </div>  
-    <span class="category-name">Posting</span>  
-  </div>  
-
-  <!-- MESSAGING -->  
-
-  <div class="category" onclick="openSection('Messaging')">  
-    <div class="icon-box">  
-      <svg viewBox="0 0 24 24">  
-        <path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2.1-5.3A8.5 8.5 0 1 1 21 11.5z"/>  
-        <path d="M8 11h8M8 14h5"/>  
-      </svg>  
-    </div>  
-    <span class="category-name">Messaging</span>  
-  </div>  
-
-  <!-- PROFILE -->  
-
-  <div class="category profile-card"  
-       onclick="openSection('Profile')">  
-    <div class="icon-box">  
-      <svg viewBox="0 0 24 24">  
-        <circle cx="12" cy="8" r="4"/>  
-        <path d="M4 21a8 8 0 0 1 16 0"/>  
-      </svg>  
-    </div>  
-    <span class="category-name">Profile</span>  
-  </div>  
-
-</div>
-
-  </section>    <!-- EMPTY GENERAL SECTIONS -->    <section id="emptySection" class="empty-section">  
-    <h2 id="emptyTitle"></h2>  
-    <p>This section is currently empty.</p>  
-  </section>    <!-- EMPTY GAMING CENTRE -->    <section id="gamingSection" class="empty-section">  
-    <h2>Gaming Centre</h2>  
-    <p>Explore your gaming world.</p>  
-  </section>  </main>  <!-- BOTTOM NAVIGATION -->  <nav class="bottom-nav">    <!-- HOME -->    <div class="nav-item active" onclick="openSection('Home')">  
-    <svg viewBox="0 0 24 24">  
-      <path d="M3 10.5L12 3l9 7.5"/>  
-      <path d="M5 9v12h14V9"/>  
-    </svg>  
-    <span>Home</span>  
-  </div>    <!-- SHORTS -->    <div class="nav-item" onclick="openSection('Shorts')">  
-    <svg viewBox="0 0 24 24">  
-      <rect x="4" y="3" width="16" height="18" rx="4"/>  
-      <path d="M10 8l6 4-6 4z"/>  
-    </svg>  
-    <span>Shorts</span>  
-  </div>    <!-- GAMING -->    <div class="nav-item" onclick="openSection('Gaming')">  
-    <svg viewBox="0 0 24 24">  
-      <path d="M6 8h12a4 4 0 0 1 3.8 5l-1.3 5a2 2 0 0 1-3.2 1l-3-2H9.7l-3 2a2 2 0 0 1-3.2-1l-1.3-5A4 4 0 0 1 6 8z"/>  
-      <path d="M8 11v4M6 13h4"/>  
-      <circle cx="16" cy="12" r="1"/>  
-      <circle cx="18" cy="15" r="1"/>  
-    </svg>  
-    <span>Gaming</span>  
-  </div>    <!-- POSTING -->    <div class="nav-item" onclick="openSection('Posting')">  
-    <svg viewBox="0 0 24 24">  
-      <rect x="3" y="3" width="18" height="18" rx="4"/>  
-      <path d="M12 8v8M8 12h8"/>  
-    </svg>  
-    <span>Posting</span>  
-  </div>    <!-- MESSAGES -->    <div class="nav-item" onclick="openSection('Messaging')">  
-    <svg viewBox="0 0 24 24">  
-      <path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2.1-5.3A8.5 8.5 0 1 1 21 11.5z"/>  
-    </svg>  
-    <span>Messages</span>  
-  </div>    <!-- PROFILE -->    <div class="nav-item" onclick="openSection('Profile')">  
-    <svg viewBox="0 0 24 24">  
-      <circle cx="12" cy="8" r="4"/>  
-      <path d="M4 21a8 8 0 0 1 16 0"/>  
-    </svg>  
-    <span>Profile</span>  
-  </div>  </nav>  <!-- NAVIGATION SCRIPT -->  <script>  
-function openSection(section) {  
-  
-  const home = document.getElementById("homeSection");  
-  const empty = document.getElementById("emptySection");  
-  const gaming = document.getElementById("gamingSection");  
-  const title = document.getElementById("emptyTitle");  
-  
-  home.style.display = "none";  
-  empty.style.display = "none";  
-  gaming.style.display = "none";  
-  
-  if (section === "Home") {
-  home.style.display = "block";
-    else if (section === "Shorts") {
-    window.location.href = "shorts.html";
-    return;
-    }
-}
-else if (section === "Shorts") {
-  window.location.href = "shorts.html";
-  return;
-else if (section === "Gaming") {
-    window.location.href = "gaming.html";
-    return;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-else if (section === "Shorts") {
-    window.location.href = "shorts.html";
-    return;
+body {
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
+  background:
+    radial-gradient(circle at top, #53118C, transparent 45%),
+    linear-gradient(145deg, #240046, #100020);
 }
-  
-  else {  
-    empty.style.display = "flex";  
-    title.textContent = section;  
-  }  
-  
-  document.querySelectorAll(".nav-item").forEach(item => {  
-    item.classList.remove("active");  
-  });  
-  
-  const activeItem = [...document.querySelectorAll(".nav-item")]  
-    .find(item => {  
-      const label = item.textContent.trim().toLowerCase();  
-  
-      if (section === "Messaging") {  
-        return label === "messages";  
-      }  
-  
-      return label === section.toLowerCase();  
-    });  
-  
-  if (activeItem) {  
-    activeItem.classList.add("active");  
-  }  
-  
-  window.scrollTo(0, 0);  
-}  
-</script>  </body>  
-</html>  
+
+/* HEADER */
+
+header {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #240046, #3B0764);
+  border-bottom: 1px solid #C084FC;
+  box-shadow: 0 5px 25px #7B2CBF55;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.logo {
+  font-size: 36px;
+  font-weight: 1000;
+  letter-spacing: 3px;
+  text-shadow:
+    0 0 8px white,
+    0 0 18px #C084FC,
+    0 0 30px #7B2CBF;
+}
+
+/* MAIN */
+
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px 15px 110px;
+}
+
+.banner {
+  padding: 30px 22px;
+  min-height: 145px;
+  border-radius: 24px;
+  margin-bottom: 28px;
+  background: linear-gradient(120deg, #7B2CBF, #3B0764, #173A91);
+  border: 1px solid #C084FC;
+  box-shadow: 0 0 25px #7B2CBF55;
+}
+
+.banner h2 {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+.banner p {
+  color: #F3E8FF;
+}
+
+.section-title {
+  font-size: 21px;
+  margin: 25px 0 18px;
+  text-shadow: 0 0 10px #C084FC;
+}
+
+/* CATEGORIES */
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.category {
+  min-height: 155px;
+  border-radius: 22px;
+  padding: 18px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(145deg, #7026B5, #3B0764, #20246D);
+  border: 1px solid #C084FC;
+  box-shadow: 0 5px 18px #0005;
+  transition: .2s;
+}
+
+.category:active {
+  transform: scale(.95);
+  box-shadow: 0 0 25px #A855F7;
+}
+
+.icon-box {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #C084FC, #7B2CBF, #2563EB);
+  box-shadow: 0 0 18px #A855F7;
+}
+
+.icon-box svg {
+  width: 35px;
+  height: 35px;
+  fill: none;
+  stroke: white;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.category-name {
+  font-size: 15px;
+  font-weight: bold;
+  text-shadow: 0 0 8px #C084FC;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 76px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(25,0,50,.97);
+  border-top: 1px solid #A855F7;
+  box-shadow: 0 -5px 20px #7B2CBF55;
+  z-index: 50;
+}
+
+.nav-item {
+  flex: 1;
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #C084FC;
+  text-decoration: none;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.nav-item svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-item.active {
+  color: white;
+  text-shadow: 0 0 10px #C084FC;
+  box-shadow: inset 0 -3px #C084FC;
+}
+
+@media(max-width:380px) {
+  .logo {font-size:29px;}
+  .category {min-height:140px;}
+  .nav-item {font-size:9px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">STRIPON</div>
+</header>
+
+<main>
+
+  <section class="banner">
+    <h2>Explore STRIPON</h2>
+    <p>Discover. Connect. Enjoy.</p>
+  </section>
+
+  <h2 class="section-title">Discover Categories</h2>
+
+  <div class="categories">
+
+    <!-- HOME -->
+
+    <a class="category" href="home.html">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 10.5L12 3l9 7.5"/>
+          <path d="M5 9v12h14V9"/>
+          <path d="M9 21v-7h6v7"/>
+        </svg>
+      </div>
+      <span class="category-name">Home</span>
+    </a>
+
+    <!-- SHORTS -->
+
+    <a class="category" href="shorts.html">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <rect x="4" y="3" width="16" height="18" rx="4"/>
+          <path d="M10 8l6 4-6 4z"/>
+        </svg>
+      </div>
+      <span class="category-name">Shorts</span>
+    </a>
+
+    <!-- GAMING -->
+
+    <a class="category" href="gaming.html">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 8h12a4 4 0 0 1 4 5l-1.5 5a2 2 0 0 1-3 1l-3-2H9l-3 2a2 2 0 0 1-3-1l-1.5-5a4 4 0 0 1 4-5z"/>
+          <path d="M8 11v4M6 13h4"/>
+          <circle cx="16" cy="12" r="1"/>
+        </svg>
+      </div>
+      <span class="category-name">Gaming</span>
+    </a>
+
+    <!-- POSTING -->
+
+    <a class="category" href="posting.html">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="4"/>
+          <path d="M12 8v8M8 12h8"/>
+        </svg>
+      </div>
+      <span class="category-name">Posting</span>
+    </a>
+
+    <!-- MESSAGING -->
+
+    <a class="category" href="messaging.html">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2-5.3A8.5 8.5 0 1 1 21 11.5z"/>
+        </svg>
+      </div>
+      <span class="category-name">Messaging</span>
+    </a>
+
+    <!-- PROFILE -->
+
+    <a class="category" href="profile.html">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 21a8 8 0 0 1 16 0"/>
+        </svg>
+      </div>
+      <span class="category-name">Profile</span>
+    </a>
+
+  </div>
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+
+<nav class="bottom-nav">
+
+  <a class="nav-item active" href="home.html">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 10.5L12 3l9 7.5M5 9v12h14V9"/>
+    </svg>
+    <span>Home</span>
+  </a>
+
+  <a class="nav-item" href="shorts.html">
+    <svg viewBox="0 0 24 24">
+      <rect x="4" y="3" width="16" height="18" rx="4"/>
+      <path d="M10 8l6 4-6 4z"/>
+    </svg>
+    <span>Shorts</span>
+  </a>
+
+  <a class="nav-item" href="gaming.html">
+    <svg viewBox="0 0 24 24">
+      <path d="M6 8h12a4 4 0 0 1 4 5l-1.5 5a2 2 0 0 1-3 1l-3-2H9l-3 2a2 2 0 0 1-3-1l-1.5-5a4 4 0 0 1 4-5z"/>
+    </svg>
+    <span>Gaming</span>
+  </a>
+
+  <a class="nav-item" href="posting.html">
+    <svg viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="4"/>
+      <path d="M12 8v8M8 12h8"/>
+    </svg>
+    <span>Posting</span>
+  </a>
+
+  <a class="nav-item" href="messaging.html">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2-5.3A8.5 8.5 0 1 1 21 11.5z"/>
+    </svg>
+    <span>Messages</span>
+  </a>
+
+  <a class="nav-item" href="profile.html">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 21a8 8 0 0 1 16 0"/>
+    </svg>
+    <span>Profile</span>
+  </a>
+
+</nav>
+
+</body>
+</html>
