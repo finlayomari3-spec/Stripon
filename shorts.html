@@ -1,66 +1,591 @@
-<script>  
-function openEmptyCategory(category) {  
-    document.getElementById("emptyCategoryTitle").textContent = category;  
-  
-    const page = document.getElementById("emptyCategoryPage");  
-    const body = page.querySelector(".empty-category-body");  
-  
-    body.innerHTML = `  
-        <div style="  
-            min-height:75vh;  
-            width:100%;  
-            display:flex;  
-            flex-direction:column;  
-            align-items:center;  
-            justify-content:center;  
-            text-align:center;  
-            padding:25px;  
-            color:#ddd;  
-        ">  
-  
-            <div style="font-size:55px;margin-bottom:20px">  
-                🌐  
-            </div>  
-  
-            <h2 style="color:white;margin-bottom:12px">  
-                Webpage Not Available  
-            </h2>  
-  
-            <p style="  
-                color:#aaa;  
-                line-height:1.6;  
-                max-width:320px;  
-            ">  
-                The webpage at this address could not be loaded because:  
-            </p>  
-  
-            <p style="color:#aaa;font-size:14px">  
-                ERR_WEBPAGE_NOT_AVAILABLE  
-            </p>  
-  
-            <button onclick="closeEmptyCategory()" style="  
-                background:#9d4edd;  
-                color:white;  
-                border:0;  
-                padding:12px 28px;  
-                border-radius:8px;  
-                font-weight:bold;  
-                margin-top:20px;  
-            ">  
-                Back to Shorts  
-            </button>  
-  
-        </div>  
-    `;  
-  
-    page.classList.add("open");  
-  
-    document.querySelectorAll(".bottom a").forEach(link => {  
-        link.classList.remove("selected");  
-    });  
-  
-    document.querySelectorAll("#feed video").forEach(video => {  
-        video.pause();  
-    });  
-}  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09000f">
+<title>STRIPON SHORTS</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#09000f;color:white;font-family:Arial,sans-serif;overflow:hidden}
+button{border:0;background:none;color:white;cursor:pointer;font:inherit}
+#app{height:100dvh;width:100%;position:relative;overflow:hidden}
+header{position:absolute;top:0;left:0;right:0;height:55px;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:linear-gradient(#000b,transparent)}
+.logo{font-size:22px;font-weight:900;letter-spacing:1px}
+.tabs{display:flex;gap:15px}
+.tabs button{font-weight:bold;opacity:.7;padding-bottom:5px}
+.tabs button.active{opacity:1;border-bottom:2px solid white}
+#feed{height:100dvh;width:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain}
+#feed::-webkit-scrollbar{display:none}
+.short{height:100dvh;min-height:100dvh;width:100%;position:relative;overflow:hidden;scroll-snap-align:start;background:#21132d}
+.short video,.short img,.visual{width:100%;height:100%;object-fit:cover}
+.visual{display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;background:linear-gradient(145deg,#47165b,#0b0612 60%,#7d194e);font-size:35px;font-weight:900}
+.visual small{font-size:13px;margin-top:12px;font-weight:normal}
+.shade{position:absolute;inset:0;background:linear-gradient(transparent 45%,#000b);pointer-events:none}
+.caption{position:absolute;bottom:105px;left:14px;right:85px;z-index:3;text-shadow:0 2px 5px #000}
+.caption strong{display:block;margin-bottom:8px}
+.caption p{font-size:14px;line-height:1.5;margin-top:5px}
+.actions{position:absolute;right:11px;bottom:105px;z-index:4;display:flex;align-items:center;flex-direction:column;gap:18px}
+.action{display:flex;align-items:center;flex-direction:column;gap:4px;font-size:12px;text-shadow:0 1px 5px #000}
+.symbol{font-size:28px}
+.avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(45deg,#ff285d,#743cff);border:2px solid white;font-weight:bold}
+.follow{width:21px;height:21px;border-radius:50%;background:#ff285d;font-size:17px;margin-top:-13px}
+.bottom{position:absolute;bottom:0;left:0;right:0;height:57px;background:#09000f;border-top:1px solid #ffffff20;display:flex;justify-content:space-around;align-items:center;z-index:10}
+.bottom button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}
+.bottom span{font-size:21px}
+.modal{display:none;position:absolute;inset:0;z-index:30;background:#09000f;overflow-y:auto;padding:18px}
+.modal.show{display:block}
+.modalhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.close{font-size:30px}
+.panel{background:#21172c;padding:15px;border-radius:13px;margin:12px 0}
+.primary{background:#ff285d;padding:12px 17px;border-radius:9px;font-weight:bold}
+.secondary{background:#382743;padding:12px 15px;border-radius:9px}
+input,textarea{width:100%;padding:12px;margin:8px 0;background:#21172c;border:1px solid #51405e;border-radius:9px;color:white}
+textarea{min-height:75px}
+video.preview{width:100%;max-height:48vh;background:#000;border-radius:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid button,.sharegrid button{background:#251a31;padding:15px;border-radius:10px;text-align:left}
+.sharegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.sharegrid button{text-align:center}
+.comment{padding:12px 0;border-bottom:1px solid #ffffff20}
+.livebox{background:linear-gradient(145deg,#3b154e,#0b0611);padding:15px;border-radius:15px}
+.livetag{background:#ff285d;padding:5px 9px;border-radius:5px;font-weight:bold}
+.muted{font-size:12px;color:#c5b6d0}
+#toast{position:absolute;z-index:80;bottom:75px;left:50%;transform:translateX(-50%);background:#392b43;padding:12px 17px;border-radius:22px;display:none;white-space:nowrap;max-width:90%;font-size:13px}
+.extension-item{background:#21172c;padding:12px;border-radius:9px;margin:8px 0}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<header>
+<div class="logo">STRIPON</div>
+<div class="tabs">
+<button class="active" onclick="setTab(this,'For You')">For You</button>
+<button onclick="setTab(this,'Following')">Following</button>
+<button onclick="openLive()">LIVE</button>
+</div>
+</header>
+
+<main id="feed">
+<section class="short" data-id="welcome">
+<div class="visual">STRIPON<small>Your Shorts experience starts here</small></div>
+<div class="shade"></div>
+<div class="caption">
+<strong>@stripon_creator</strong>
+<p>Welcome to STRIPON Shorts. Discover, create and share your moments.</p>
+<p>#STRIPON #Shorts</p>
+</div>
+<div class="actions">
+<div class="action"><div class="avatar">S</div><button class="follow" onclick="follow(this)">+</button></div>
+<button class="action" onclick="like(this)"><span class="symbol">🤍</span><span>Like</span></button>
+<button class="action" onclick="openComments(this)"><span class="symbol">💬</span><span class="count">0</span></button>
+<button class="action" onclick="shareShort()"><span class="symbol">➦</span><span>Share</span></button>
+<button class="action" onclick="saveShort(this)"><span class="symbol">🔖</span><span>Save</span></button>
+<button class="action" onclick="openMenu(this)"><span class="symbol">⋮</span><span>More</span></button>
+</div>
+</section>
+
+<section class="short" data-id="discover">
+<div class="visual" style="background:linear-gradient(145deg,#123d58,#09000f 60%,#8b2059)">DISCOVER<small>Scroll to explore more Shorts</small></div>
+<div class="shade"></div>
+<div class="caption">
+<strong>@stripon_creator</strong>
+<p>Explore the STRIPON community and share your creativity.</p>
+<p>#Discover</p>
+</div>
+<div class="actions">
+<div class="action"><div class="avatar">S</div><button class="follow" onclick="follow(this)">+</button></div>
+<button class="action" onclick="like(this)"><span class="symbol">🤍</span><span>Like</span></button>
+<button class="action" onclick="openComments(this)"><span class="symbol">💬</span><span class="count">0</span></button>
+<button class="action" onclick="shareShort()"><span class="symbol">➦</span><span>Share</span></button>
+<button class="action" onclick="saveShort(this)"><span class="symbol">🔖</span><span>Save</span></button>
+<button class="action" onclick="openMenu(this)"><span class="symbol">⋮</span><span>More</span></button>
+</div>
+</section>
+</main>
+
+<nav class="bottom">
+<button onclick="topFeed()"><span>▶</span>Shorts</button>
+<button onclick="openModal('createModal')"><span>＋</span>Create</button>
+<button onclick="openLive()"><span>🔴</span>LIVE</button>
+<button onclick="openModal('profileModal')"><span>👤</span>Profile</button>
+<button onclick="openModal('extensionsModal')"><span>⚙️</span>Tools</button>
+</nav>
+
+<div id="toast"></div>
+
+<!-- CREATE -->
+<div class="modal" id="createModal">
+<div class="modalhead"><h2>Create Short</h2><button class="close" onclick="closeModal()">×</button></div>
+<div class="panel">
+<p>Capture a moment or upload from your device.</p><br>
+<button class="primary" onclick="startCamera()">📷 Camera</button>
+<button class="secondary" onclick="document.getElementById('mediaInput').click()">🖼 Gallery</button>
+<input type="file" id="mediaInput" accept="image/*,video/*" hidden onchange="chooseMedia(event)">
+</div>
+<video id="cameraPreview" class="preview" autoplay playsinline muted></video>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="primary" onclick="takePhoto()">Take Photo</button>
+<button class="primary" onclick="recordVideo()">Record / Stop</button>
+<button class="secondary" onclick="stopCamera()">Stop Camera</button>
+</div>
+<p id="mediaStatus" class="muted"></p>
+<div class="panel">
+<textarea id="captionInput" placeholder="Write your caption..."></textarea>
+<button class="primary" onclick="publishShort()">Publish Short</button>
+</div>
+</div>
+
+<!-- COMMENTS -->
+<div class="modal" id="commentsModal">
+<div class="modalhead"><h2>Comments</h2><button class="close" onclick="closeModal()">×</button></div>
+<div id="commentsList"></div>
+<div class="panel">
+<input id="commentInput" placeholder="Write a comment...">
+<button class="primary" onclick="postComment()">Post</button>
+</div>
+</div>
+
+<!-- SHARE -->
+<div class="modal" id="shareModal">
+<div class="modalhead"><h2>Share Short</h2><button class="close" onclick="closeModal()">×</button></div>
+<div class="sharegrid">
+<button onclick="nativeShare()">📤<br>Share</button>
+<button onclick="shareTo('WhatsApp')">🟢<br>WhatsApp</button>
+<button onclick="shareTo('Telegram')">✈️<br>Telegram</button>
+<button onclick="shareTo('Email')">✉️<br>Email</button>
+<button onclick="shareTo('SMS')">💬<br>Messages</button>
+<button onclick="copyLink()">🔗<br>Copy link</button>
+</div>
+<div class="panel">
+<strong>Send to friends</strong>
+<input placeholder="Search people">
+<p class="muted">Real account-to-account messaging requires a backend.</p>
+</div>
+</div>
+
+<!-- MORE MENU -->
+<div class="modal" id="menuModal">
+<div class="modalhead"><h2>Short options</h2><button class="close" onclick="closeModal()">×</button></div>
+<div class="grid">
+<button onclick="repost()">🔁 Repost</button>
+<button onclick="favourite()">⭐ Favourites</button>
+<button onclick="toast('Sound selected')">🎵 Use sound</button>
+<button onclick="copyLink()">🔗 Copy link</button>
+<button onclick="shareShort()">📤 Share</button>
+<button onclick="downloadShort()">⬇ Download</button>
+<button onclick="toast('Preference saved')">🚫 Not interested</button>
+<button onclick="toast('Comment settings opened')">💬 Comment settings</button>
+<button onclick="toast('Report submitted for review')">🚩 Report</button>
+<button onclick="openModal('profileModal')">👤 Creator profile</button>
+<button onclick="toast('Caption details')">📝 Caption</button>
+<button onclick="toast('Sound details')">🎧 Sound details</button>
+</div>
+</div>
+
+<!-- LIVE STUDIO -->
+<div class="modal" id="liveModal">
+<div class="modalhead"><h2>STRIPON LIVE</h2><button class="close" onclick="endLive()">×</button></div>
+<div class="livebox">
+<span class="livetag">LIVE STUDIO</span>
+<p id="liveStatus" style="margin:12px 0">Not live</p>
+<video id="livePreview" class="preview" autoplay playsinline muted></video>
+<br><br>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="secondary" onclick="startLiveCamera()">📷 Camera</button>
+<button class="secondary" onclick="flipCamera()">🔄 Flip</button>
+<button class="secondary" onclick="muteMic()">🎙 Mute</button>
+<button class="secondary" onclick="toggleLiveCamera()">Camera on/off</button>
+</div>
+<br>
+<button class="primary" id="liveButton" onclick="beginLive()">🔴 Start LIVE</button>
+<p class="muted" style="margin-top:12px">Local LIVE preview. Public broadcasting needs a streaming server.</p>
+<div class="panel">
+<strong>LIVE Chat</strong>
+<div id="liveChat"></div>
+<input id="liveMessage" placeholder="Write a message...">
+<button class="primary" onclick="sendLiveMessage()">Send</button>
+</div>
+<div class="panel">
+<strong>Reactions</strong><br><br>
+<button onclick="toast('❤️ Reaction')">❤️</button>
+<button onclick="toast('👏 Reaction')">👏</button>
+<button onclick="toast('🔥 Reaction')">🔥</button>
+<button onclick="toast('⭐ Reaction')">⭐</button>
+</div>
+</div>
+</div>
+
+<!-- PROFILE -->
+<div class="modal" id="profileModal">
+<div class="modalhead"><h2>Shorts Profile</h2><button class="close" onclick="closeModal()">×</button></div>
+<div class="panel" style="text-align:center">
+<div class="avatar" style="width:75px;height:75px;margin:auto;font-size:25px">S</div>
+<h2 style="margin:10px">@your_username</h2>
+<p class="muted">STRIPON creator</p>
+<br>
+<div style="display:flex;justify-content:space-around">
+<div><strong id="postCount">2</strong><p class="muted">Posts</p></div>
+<div><strong id="followerCount">0</strong><p class="muted">Followers</p></div>
+<div><strong id="followingCount">0</strong><p class="muted">Following</p></div>
+</div>
+</div>
+<div class="grid">
+<button onclick="showSaved()">🔖 Saved</button>
+<button onclick="showFavourites()">⭐ Favourites</button>
+<button onclick="showReposts()">🔁 Reposts</button>
+<button onclick="toast('Your posts')">🎬 Posts</button>
+</div>
+<div class="panel"><p id="profileDetails" class="muted">Your activity appears here.</p></div>
+</div>
+
+<!-- EXPANDABLE FEATURES / TOOLS -->
+<div class="modal" id="extensionsModal">
+<div class="modalhead"><h2>Shorts Feature Centre</h2><button class="close" onclick="closeModal()">×</button></div>
+<p class="muted">Each feature area can be extended independently.</p>
+<div class="extension-item"><strong>1. Feed features</strong><p class="muted">Scrolling, video playback, autoplay and recommendations.</p><button class="secondary" onclick="extensionInfo('Feed')">Manage Feed</button></div>
+<div class="extension-item"><strong>2. Engagement features</strong><p class="muted">Likes, comments, follows, reposts and reactions.</p><button class="secondary" onclick="extensionInfo('Engagement')">Manage Engagement</button></div>
+<div class="extension-item"><strong>3. Sharing features</strong><p class="muted">External sharing, copy links and messaging extensions.</p><button class="secondary" onclick="extensionInfo('Sharing')">Manage Sharing</button></div>
+<div class="extension-item"><strong>4. Create features</strong><p class="muted">Camera, photo, recording, gallery and future editing tools.</p><button class="secondary" onclick="extensionInfo('Create')">Manage Create</button></div>
+<div class="extension-item"><strong>5. LIVE features</strong><p class="muted">Camera, microphone, chat, reactions and future streaming tools.</p><button class="secondary" onclick="extensionInfo('LIVE')">Manage LIVE</button></div>
+<div class="extension-item"><strong>6. Profile features</strong><p class="muted">Posts, followers, following, saved, favourites and reposts.</p><button class="secondary" onclick="extensionInfo('Profile')">Manage Profile</button></div>
+<div class="extension-item"><strong>7. Future extensions</strong><p class="muted">Add new Shorts tools without changing the other sections.</p><button class="secondary" onclick="extensionInfo('Extensions')">Manage Extensions</button></div>
+<div class="panel">
+<strong>Add a feature note</strong>
+<input id="featureName" placeholder="New feature name">
+<textarea id="featureDescription" placeholder="Describe the feature you want to add"></textarea>
+<button class="primary" onclick="addFeatureNote()">Save feature idea</button>
+<div id="featureNotes"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+/* =========================================
+   STRIPON SHORTS EXTENSION ARCHITECTURE
+   Each section can be extended independently.
+========================================= */
+
+const ShortsModules = {
+ Feed:{enabled:true,features:['vertical-scroll','infinite-loop','video-playback']},
+ Engagement:{enabled:true,features:['likes','comments','follows','reposts']},
+ Sharing:{enabled:true,features:['native-share','copy-link','whatsapp','telegram']},
+ Create:{enabled:true,features:['camera','photo-capture','video-recording','gallery-upload']},
+ Live:{enabled:true,features:['camera','microphone','chat-interface','reactions']},
+ Profile:{enabled:true,features:['posts','followers','following','saved','favourites']},
+ Extensions:{enabled:true,features:[]}
+};
+
+const ShortsFeatureRegistry = {};
+
+function registerShortsFeature(section,name,callback){
+ if(!ShortsModules[section]){
+  ShortsModules[section]={enabled:true,features:[]};
+ }
+ ShortsModules[section].features.push(name);
+ ShortsFeatureRegistry[name]=callback;
+ toast('Feature registered: '+name);
+}
+
+function runShortsFeature(name,...args){
+ if(typeof ShortsFeatureRegistry[name]==='function'){
+  return ShortsFeatureRegistry[name](...args);
+ }
+ toast('This extension has not been installed yet');
+}
+
+function extensionInfo(section){
+ toast(section+' features selected');
+}
+
+function addFeatureNote(){
+ const name=document.getElementById('featureName').value.trim();
+ const description=document.getElementById('featureDescription').value.trim();
+ if(!name){toast('Enter a feature name');return}
+ const item=document.createElement('div');
+ item.className='extension-item';
+ const title=document.createElement('strong');
+ title.textContent=name;
+ const desc=document.createElement('p');
+ desc.className='muted';
+ desc.textContent=description;
+ item.append(title,desc);
+ document.getElementById('featureNotes').appendChild(item);
+ document.getElementById('featureName').value='';
+ document.getElementById('featureDescription').value='';
+ toast('Feature idea added to this session');
+}
+
+/* GENERAL */
+const feed=document.getElementById('feed');
+let selectedShort=null;
+let selectedCommentId=null;
+let cameraStream=null,liveStream=null,recorder=null;
+let mediaBlob=null,recordedChunks=[];
+let facing='user',muted=false;
+let following=0;
+const comments={};
+const saved=new Set(),favorites=new Set(),reposts=new Set();
+
+function toast(msg){
+ const t=document.getElementById('toast');
+ t.textContent=msg;t.style.display='block';
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display='none',2300);
+}
+function openModal(id){
+ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));
+ document.getElementById(id).classList.add('show');
+}
+function closeModal(){
+ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));
+ stopCamera();
+}
+function topFeed(){feed.scrollTo({top:0,behavior:'smooth'})}
+function setTab(btn,name){
+ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ if(name==='Following')toast('Following feed selected');
+ else topFeed();
+}
+
+/* ENGAGEMENT */
+function like(btn){
+ const icon=btn.querySelector('.symbol');
+ const liked=icon.textContent==='❤️';
+ icon.textContent=liked?'🤍':'❤️';
+ btn.lastElementChild.textContent=liked?'Like':'Liked';
+}
+function follow(btn){
+ const active=btn.textContent==='✓';
+ btn.textContent=active?'+':'✓';
+ following+=active?-1:1;
+ document.getElementById('followingCount').textContent=following;
+ toast(active?'Unfollowed':'Following creator');
+}
+function saveShort(btn){
+ const id=btn.closest('.short').dataset.id;
+ if(saved.has(id)){saved.delete(id);btn.querySelector('.symbol').textContent='🔖';toast('Removed from saved')}
+ else{saved.add(id);btn.querySelector('.symbol').textContent='✅';toast('Short saved')}
+}
+function openComments(btn){
+ selectedShort=btn.closest('.short');
+ selectedCommentId=selectedShort.dataset.id;
+ renderComments();openModal('commentsModal');
+}
+function renderComments(){
+ const arr=comments[selectedCommentId]||[];
+ document.getElementById('commentsList').innerHTML=arr.length?
+ arr.map(c=>'<div class="comment"><strong>@you</strong><p>'+escapeHTML(c)+'</p></div>').join(''):
+ '<p class="muted">No comments yet.</p>';
+}
+function postComment(){
+ const input=document.getElementById('commentInput');
+ if(!input.value.trim())return;
+ comments[selectedCommentId]=comments[selectedCommentId]||[];
+ comments[selectedCommentId].push(input.value.trim());
+ if(selectedShort)selectedShort.querySelector('.count').textContent=comments[selectedCommentId].length;
+ input.value='';renderComments();
+}
+function escapeHTML(s){
+ return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* SHARING */
+function shareShort(){openModal('shareModal')}
+function nativeShare(){
+ if(navigator.share)navigator.share({title:'STRIPON Short',url:location.href}).catch(()=>{});
+ else copyLink();
+}
+function copyLink(){
+ if(navigator.clipboard)navigator.clipboard.writeText(location.href).then(()=>toast('Link copied')).catch(()=>toast(location.href));
+ else toast(location.href);
+}
+function shareTo(type){
+ const u=encodeURIComponent(location.href);
+ const txt=encodeURIComponent('Watch this STRIPON Short');
+ const links={
+ WhatsApp:'https://wa.me/?text='+txt+'%20'+u,
+ Telegram:'https://t.me/share/url?url='+u+'&text='+txt,
+ Email:'mailto:?subject=STRIPON%20Short&body='+txt+'%20'+u,
+ SMS:'sms:?body='+txt+'%20'+u
+ };
+ window.open(links[type],'_blank');
+}
+function openMenu(btn){selectedShort=btn.closest('.short');openModal('menuModal')}
+function repost(){if(selectedShort)reposts.add(selectedShort.dataset.id);closeModal();toast('Reposted')}
+function favourite(){if(selectedShort)favorites.add(selectedShort.dataset.id);closeModal();toast('Added to favourites')}
+function downloadShort(){
+ const v=selectedShort?.querySelector('video');
+ if(!v){toast('No video available');return}
+ const a=document.createElement('a');
+ a.href=v.currentSrc||v.src;a.download='stripon-short.mp4';a.click();
+}
+
+/* PROFILE */
+function showSaved(){document.getElementById('profileDetails').textContent='Saved Shorts: '+saved.size}
+function showFavourites(){document.getElementById('profileDetails').textContent='Favourites: '+favorites.size}
+function showReposts(){document.getElementById('profileDetails').textContent='Reposts: '+reposts.size}
+
+/* CREATE */
+async function startCamera(){
+ try{
+  cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
+  const v=document.getElementById('cameraPreview');
+  v.srcObject=cameraStream;v.play();
+ }catch(e){toast('Allow camera access. Use HTTPS.')}
+}
+function stopCamera(){
+ if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}
+ document.getElementById('cameraPreview').srcObject=null;
+}
+function takePhoto(){
+ const v=document.getElementById('cameraPreview');
+ if(!cameraStream||!v.videoWidth){toast('Open camera first');return}
+ const c=document.createElement('canvas');
+ c.width=v.videoWidth;c.height=v.videoHeight;
+ c.getContext('2d').drawImage(v,0,0);
+ c.toBlob(b=>{mediaBlob=b;document.getElementById('mediaStatus').textContent='Photo captured and ready'});
+}
+function recordVideo(){
+ if(!cameraStream){toast('Open camera first');return}
+ if(!recorder||recorder.state==='inactive'){
+  recordedChunks=[];
+  recorder=new MediaRecorder(cameraStream);
+  recorder.ondataavailable=e=>{if(e.data.size)recordedChunks.push(e.data)};
+  recorder.onstop=()=>{
+   mediaBlob=new Blob(recordedChunks,{type:recorder.mimeType||'video/webm'});
+   document.getElementById('mediaStatus').textContent='Video ready to publish';
+  };
+  recorder.start();toast('Recording started');
+ }else{recorder.stop();toast('Recording stopped')}
+}
+function chooseMedia(e){
+ const f=e.target.files[0];if(!f)return;
+ mediaBlob=f;
+ document.getElementById('mediaStatus').textContent='Selected: '+f.name;
+}
+function publishShort(){
+ if(!mediaBlob){toast('Record or select media first');return}
+ const url=URL.createObjectURL(mediaBlob);
+ const isVideo=mediaBlob.type.startsWith('video');
+ const section=document.createElement('section');
+ section.className='short';section.dataset.id='post_'+Date.now();
+ section.innerHTML=`
+ ${isVideo?'<video src="'+url+'" autoplay muted loop playsinline></video>':'<img src="'+url+'" alt="Short">'}
+ <div class="shade"></div>
+ <div class="caption"><strong>@your_username</strong><p>${escapeHTML(document.getElementById('captionInput').value||'My new STRIPON Short')}</p></div>
+ <div class="actions">
+ <div class="action"><div class="avatar">S</div><button class="follow" onclick="follow(this)">+</button></div>
+ <button class="action" onclick="like(this)"><span class="symbol">🤍</span><span>Like</span></button>
+ <button class="action" onclick="openComments(this)"><span class="symbol">💬</span><span class="count">0</span></button>
+ <button class="action" onclick="shareShort()"><span class="symbol">➦</span><span>Share</span></button>
+ <button class="action" onclick="saveShort(this)"><span class="symbol">🔖</span><span>Save</span></button>
+ <button class="action" onclick="openMenu(this)"><span class="symbol">⋮</span><span>More</span></button>
+ </div>`;
+ feed.insertBefore(section,feed.firstChild);
+ mediaBlob=null;
+ document.getElementById('captionInput').value='';
+ document.getElementById('postCount').textContent=feed.querySelectorAll('.short').length;
+ closeModal();topFeed();toast('Short published to this feed');
+}
+
+/* LIVE */
+async function startLiveCamera(){
+ try{
+  if(liveStream)liveStream.getTracks().forEach(t=>t.stop());
+  liveStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
+  const v=document.getElementById('livePreview');
+  v.srcObject=liveStream;v.play();muted=false;
+  toast('LIVE camera connected');
+ }catch(e){toast('Allow camera and microphone access over HTTPS')}
+}
+async function flipCamera(){
+ facing=facing==='user'?'environment':'user';
+ if(liveStream)await startLiveCamera();
+}
+function muteMic(){
+ if(!liveStream){toast('Connect camera first');return}
+ muted=!muted;
+ liveStream.getAudioTracks().forEach(t=>t.enabled=!muted);
+ toast(muted?'Microphone muted':'Microphone on');
+}
+function toggleLiveCamera(){
+ if(!liveStream){toast('Connect camera first');return}
+ const track=liveStream.getVideoTracks()[0];
+ if(track)track.enabled=!track.enabled;
+}
+function openLive(){openModal('liveModal')}
+function beginLive(){
+ if(!liveStream){toast('Connect camera first');return}
+ document.getElementById('liveStatus').textContent='LIVE preview active';
+ const b=document.getElementById('liveButton');
+ b.textContent='End LIVE';b.onclick=endLive;
+ toast('Local LIVE preview started');
+}
+function endLive(){
+ if(liveStream){liveStream.getTracks().forEach(t=>t.stop());liveStream=null}
+ document.getElementById('livePreview').srcObject=null;
+ document.getElementById('liveStatus').textContent='Not live';
+ const b=document.getElementById('liveButton');
+ b.textContent='🔴 Start LIVE';b.onclick=beginLive;
+ closeModal();
+}
+function sendLiveMessage(){
+ const input=document.getElementById('liveMessage');
+ if(!input.value.trim())return;
+ const p=document.createElement('p');
+ p.textContent='@you: '+input.value;
+ document.getElementById('liveChat').appendChild(p);
+ input.value='';
+}
+
+/* BIDIRECTIONAL FEED LOOP */
+function setupInfiniteLoop(){
+ feed.addEventListener('scroll',()=>{
+  if(loopLock)return;
+  const items=feed.querySelectorAll('.short');
+  if(items.length<2)return;
+  const first=items[0],last=items[items.length-1];
+  if(feed.scrollTop+feed.clientHeight>=feed.scrollHeight-120){
+   loopLock=true;
+   const clone=first.cloneNode(true);
+   clone.dataset.clone='yes';
+   feed.appendChild(clone);
+   setTimeout(()=>loopLock=false,250);
+  }else if(feed.scrollTop<=5){
+   loopLock=true;
+   const oldHeight=feed.scrollHeight;
+   const clone=last.cloneNode(true);
+   clone.dataset.clone='yes';
+   feed.insertBefore(clone,first);
+   feed.scrollTop+=feed.scrollHeight-oldHeight;
+   setTimeout(()=>loopLock=false,250);
+  }
+ },{passive:true});
+}
+setupInfiniteLoop();
+document.getElementById('postCount').textContent=feed.querySelectorAll('.short').length;
+
+/* =========================================
+   FUTURE FEATURE REGISTRATION EXAMPLE
+
+   Add new functions without replacing the
+   rest of the Shorts system.
+
+   Example:
+   registerShortsFeature('Feed','new-filter',()=>{
+     toast('New filter opened');
+   });
+
+   Run it with:
+   runShortsFeature('new-filter');
+========================================= */
 </script>
+</body>
+</html>
