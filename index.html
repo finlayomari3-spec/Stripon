@@ -514,10 +514,11 @@ function openSection(section) {
   if (section === "Home") {  
     home.style.display = "block";  
   }  
-  
-  else if (section === "Gaming") {  
-    gaming.style.display = "flex";  
-  }  
+
+    else if (section === "Gaming") {
+    window.location.href = "gaming.html";
+    return;
+    }
   
   else {  
     empty.style.display = "flex";  
