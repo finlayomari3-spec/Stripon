@@ -1,1 +1,66 @@
-
+<script>  
+function openEmptyCategory(category) {  
+    document.getElementById("emptyCategoryTitle").textContent = category;  
+  
+    const page = document.getElementById("emptyCategoryPage");  
+    const body = page.querySelector(".empty-category-body");  
+  
+    body.innerHTML = `  
+        <div style="  
+            min-height:75vh;  
+            width:100%;  
+            display:flex;  
+            flex-direction:column;  
+            align-items:center;  
+            justify-content:center;  
+            text-align:center;  
+            padding:25px;  
+            color:#ddd;  
+        ">  
+  
+            <div style="font-size:55px;margin-bottom:20px">  
+                🌐  
+            </div>  
+  
+            <h2 style="color:white;margin-bottom:12px">  
+                Webpage Not Available  
+            </h2>  
+  
+            <p style="  
+                color:#aaa;  
+                line-height:1.6;  
+                max-width:320px;  
+            ">  
+                The webpage at this address could not be loaded because:  
+            </p>  
+  
+            <p style="color:#aaa;font-size:14px">  
+                ERR_WEBPAGE_NOT_AVAILABLE  
+            </p>  
+  
+            <button onclick="closeEmptyCategory()" style="  
+                background:#9d4edd;  
+                color:white;  
+                border:0;  
+                padding:12px 28px;  
+                border-radius:8px;  
+                font-weight:bold;  
+                margin-top:20px;  
+            ">  
+                Back to Shorts  
+            </button>  
+  
+        </div>  
+    `;  
+  
+    page.classList.add("open");  
+  
+    document.querySelectorAll(".bottom a").forEach(link => {  
+        link.classList.remove("selected");  
+    });  
+  
+    document.querySelectorAll("#feed video").forEach(video => {  
+        video.pause();  
+    });  
+}  
+</script>
