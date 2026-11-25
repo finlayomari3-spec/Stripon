@@ -1,1 +1,1432 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#240046">
+<title>STRIPON GAMING</title>
+
+<style>
+:root {
+  --bg:#100020;
+  --purple:#240046;
+  --electric:#7B2CBF;
+  --blue:#2563EB;
+  --light:#F0ABFC;
+  --white:#fff;
+  --muted:#c4b5fd;
+}
+
+* {box-sizing:border-box}
+
+body {
+  margin:0;
+  background:linear-gradient(135deg,#100020,#17052f,#101b49);
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
+button,input,select,textarea {font:inherit}
+button {cursor:pointer}
+
+header {
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:13px 16px;
+  background:#16002bea;
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid #7134a8;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.s-logo {width:39px;height:39px}
+
+.s-logo svg {width:100%;height:100%}
+
+.brand-name {color:white}
+
+.header-actions {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.header-actions button {
+  background:#ffffff12;
+  color:white;
+  border:1px solid #7945b5;
+  border-radius:10px;
+  padding:9px;
+}
+
+#profileButton {
+  max-width:130px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+#profileButton img {
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  vertical-align:middle;
+  margin-right:5px;
+}
+
+main {max-width:1100px;margin:auto;padding:18px}
+
+.hero {
+  padding:45px 22px;
+  border-radius:25px;
+  background:
+    radial-gradient(circle at 80% 20%,#2563eb88,transparent 35%),
+    linear-gradient(120deg,#3b0764,#240046 55%,#172554);
+  border:1px solid #8b5cf6;
+  overflow:hidden;
+}
+
+.hero small {
+  color:#e9d5ff;
+  letter-spacing:3px;
+  font-weight:bold;
+}
+
+.hero h1 {
+  font-size:clamp(38px,8vw,68px);
+  line-height:1.02;
+  margin:17px 0;
+}
+
+.hero h1 span {
+  color:#c084fc;
+  text-shadow:0 0 25px #9333ea;
+}
+
+.hero p {
+  color:#ddd6fe;
+  max-width:500px;
+  line-height:1.6;
+}
+
+.section {margin:32px 0}
+
+.section-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.section-title h2 {font-size:21px;margin:0}
+
+.section-title small {color:#c4b5fd}
+
+.search-box {
+  width:100%;
+  padding:15px;
+  border:1px solid #7945b5;
+  border-radius:13px;
+  background:#19082e;
+  color:white;
+  outline:none;
+  margin:20px 0 12px;
+}
+
+.filter-row {
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:8px;
+}
+
+.filter-row button {
+  flex-shrink:0;
+  padding:10px 15px;
+  border-radius:20px;
+  background:#ffffff12;
+  color:white;
+  border:1px solid #7040a5;
+}
+
+.filter-row button.active {
+  background:linear-gradient(100deg,#9333ea,#2563eb);
+  border-color:transparent;
+}
+
+.device-select {
+  padding:11px;
+  background:#19082e;
+  color:white;
+  border:1px solid #7945b5;
+  border-radius:10px;
+  margin-top:10px;
+  width:100%;
+}
+
+.poster-row {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+
+.game-card {
+  background:#ffffff0d;
+  border:1px solid #ffffff20;
+  border-radius:16px;
+  overflow:hidden;
+  min-width:0;
+}
+
+.poster {
+  height:145px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:65px;
+  background:linear-gradient(140deg,#6d28d9,#172554);
+}
+
+.game-card:nth-child(3n+2) .poster {
+  background:linear-gradient(140deg,#be185d,#4c1d95);
+}
+
+.game-card:nth-child(3n+3) .poster {
+  background:linear-gradient(140deg,#0369a1,#312e81);
+}
+
+.game-info {padding:12px}
+
+.game-info h3 {font-size:15px;margin:0 0 7px}
+
+.game-info p {
+  color:#c4b5fd;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.game-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.game-actions button {
+  flex:1;
+  padding:9px 7px;
+  border:0;
+  border-radius:8px;
+  background:#7c3aed;
+  color:white;
+  font-size:11px;
+}
+
+.game-actions .save-game {background:#263b78}
+
+.primary-button {
+  background:linear-gradient(110deg,#9333ea,#2563eb);
+  border:0;
+  border-radius:12px;
+  padding:13px 18px;
+  color:white;
+  font-weight:bold;
+}
+
+.feature-card {
+  padding:22px;
+  border-radius:18px;
+  background:linear-gradient(120deg,#4c1d95,#172554);
+  border:1px solid #8b5cf6;
+}
+
+.feature-card h2 {margin-top:0}
+
+.feature-card p {color:#ddd6fe;line-height:1.6}
+
+.link-button {
+  display:inline-block;
+  text-decoration:none;
+  background:#9333ea;
+  color:white;
+  padding:12px 15px;
+  border-radius:10px;
+  margin:5px 5px 5px 0;
+  font-size:13px;
+}
+
+.empty-message {
+  color:#c4b5fd;
+  text-align:center;
+  padding:20px;
+}
+
+.avatar-gallery {
+  background:linear-gradient(145deg,#17002e,#240046,#101b49);
+  padding:20px;
+  border-radius:22px;
+  border:1px solid #7945b5;
+}
+
+.avatar-heading {text-align:center;margin-bottom:20px}
+
+.avatar-heading span {
+  color:#c084fc;
+  font-size:11px;
+  letter-spacing:2px;
+  font-weight:bold;
+}
+
+.avatar-heading h2 {font-size:26px;margin:10px 0}
+
+.avatar-heading p {color:#c4b5fd;font-size:13px}
+
+.avatar-profile {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:13px;
+  background:#ffffff12;
+  border:1px solid #8b5cf6;
+  border-radius:15px;
+  margin-bottom:15px;
+}
+
+.avatar-profile img {
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  border:3px solid #a855f7;
+  background:#35105d;
+  object-fit:cover;
+}
+
+.avatar-profile p {color:#c4b5fd;font-size:12px}
+
+.avatar-controls {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.avatar-controls input,
+.avatar-controls select,
+.avatar-controls button {
+  min-width:0;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #7945b5;
+  background:#180b30;
+  color:white;
+}
+
+.avatar-controls input {grid-column:1/-1}
+
+.avatar-controls button {
+  background:linear-gradient(110deg,#9333ea,#2563eb);
+  border:0;
+}
+
+.avatar-count {
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:11px;
+  color:#c4b5fd;
+  margin:17px 0;
+}
+
+.avatar-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+}
+
+.avatar-card {
+  background:#ffffff10;
+  border:2px solid transparent;
+  border-radius:12px;
+  padding:6px;
+  color:white;
+  min-width:0;
+}
+
+.avatar-card.selected {
+  border-color:#c084fc;
+  background:#7e22ce55;
+}
+
+.avatar-card img {
+  display:block;
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:9px;
+}
+
+.avatar-card span {
+  display:block;
+  font-size:9px;
+  margin-top:6px;
+  overflow-wrap:anywhere;
+}
+
+.avatar-pagination {
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin:18px 0;
+}
+
+.avatar-pagination button {
+  padding:12px 17px;
+  background:#6d28d9;
+  color:white;
+  border:0;
+  border-radius:10px;
+}
+
+.avatar-pagination button:disabled {opacity:.35}
+
+.avatar-save {
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:11px;
+  background:linear-gradient(110deg,#9333ea,#2563eb);
+  color:white;
+  font-weight:bold;
+}
+
+.panel {
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:#090014eF;
+  display:none;
+  overflow-y:auto;
+  padding:20px;
+}
+
+.panel.open {display:block}
+
+.panel-content {
+  max-width:480px;
+  margin:30px auto;
+  padding:22px;
+  background:#20083b;
+  border:1px solid #8b5cf6;
+  border-radius:18px;
+}
+
+.panel-content h2 {margin-top:0}
+
+.panel-content label {
+  display:block;
+  margin:15px 0 7px;
+  color:#ddd6fe;
+  font-size:13px;
+}
+
+.panel-content input,
+.panel-content select,
+.panel-content textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #7945b5;
+  border-radius:10px;
+  background:#12051f;
+  color:white;
+}
+
+.panel-content textarea {min-height:100px}
+
+.panel-buttons {
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+
+.panel-buttons button {flex:1}
+
+.secondary-button {
+  padding:12px;
+  border:1px solid #7945b5;
+  border-radius:10px;
+  background:#ffffff12;
+  color:white;
+}
+
+.profile-avatar-preview {
+  display:block;
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:12px auto;
+  border:3px solid #a855f7;
+}
+
+footer {
+  text-align:center;
+  padding:30px 15px;
+  color:#c4b5fd;
+  font-size:12px;
+}
+
+footer a {color:#c084fc}
+
+.hidden {display:none!important}
+
+@media(min-width:650px) {
+  .poster-row {grid-template-columns:repeat(3,minmax(0,1fr))}
+  .poster {height:180px}
+}
+
+@media(min-width:900px) {
+  .poster-row {grid-template-columns:repeat(4,minmax(0,1fr))}
+  main {padding:25px}
+}
+
+@media(max-width:390px) {
+  .avatar-grid {grid-template-columns:repeat(3,minmax(0,1fr))}
+  .brand {font-size:19px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="s-logo">
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="sGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0ABFC"/>
+            <stop offset="45%" stop-color="#A855F7"/>
+            <stop offset="100%" stop-color="#2563EB"/>
+          </linearGradient>
+        </defs>
+        <path d="M72 20 C60 8 30 10 24 29 C16 50 48 48 66 57 C88 68 72 91 48 91 C33 91 21 84 16 76"
+          stroke="url(#sGradient)" stroke-width="13"
+          fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="brand-name">STRIPON</span>
+  </div>
+
+  <div class="header-actions">
+    <button type="button" onclick="openPanel('reportPanel')" aria-label="Report">⚑</button>
+    <button type="button" onclick="openPanel('settingsPanel')" aria-label="Settings">⚙</button>
+    <button type="button" id="profileButton" onclick="openProfile()">👤 Profile</button>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <small>STRIPON GAMING</small>
+  <h1>YOUR <span>GAMING</span><br>WORLD</h1>
+  <p>Discover games, explore categories and enjoy gaming across your devices.</p>
+  <button class="primary-button" onclick="openProfile()">Create Player Profile</button>
+</section>
+
+<section class="section">
+  <div class="section-title">
+    <h2>Find Your Games</h2>
+    <small>Explore STRIPON</small>
+  </div>
+
+  <input class="search-box" id="gameSearch"
+    type="search" placeholder="Search games...">
+
+  <div class="filter-row" id="categoryFilters">
+    <button class="active" data-category="all">All</button>
+    <button data-category="action">Action</button>
+    <button data-category="racing">Racing</button>
+    <button data-category="sports">Sports</button>
+    <button data-category="adventure">Adventure</button>
+    <button data-category="puzzle">Puzzle</button>
+    <button data-category="multiplayer">Multiplayer</button>
+  </div>
+
+  <label for="deviceSelect">Choose your device</label>
+  <select id="deviceSelect" class="device-select">
+    <option value="all">All devices</option>
+    <option value="android">Android</option>
+    <option value="iphone">iPhone</option>
+    <option value="tablet">Tablet</option>
+    <option value="laptop">Laptop / PC</option>
+    <option value="tv">Smart TV</option>
+  </select>
+</section>
+
+<section class="section">
+  <div class="section-title">
+    <h2>Popular Games</h2>
+    <small>Discover games</small>
+  </div>
+
+  <div class="poster-row" id="popularGames">
+
+    <article class="game-card" data-name="Roblox"
+      data-category="adventure multiplayer"
+      data-devices="android iphone tablet laptop">
+      <div class="poster">🎮</div>
+      <div class="game-info">
+        <h3>Roblox</h3>
+        <p>Explore experiences and multiplayer worlds.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://www.roblox.com/games/')">Play</button>
+          <button class="save-game" onclick="saveGame('Roblox')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="PUBG Mobile"
+      data-category="action multiplayer"
+      data-devices="android tablet">
+      <div class="poster">🎯</div>
+      <div class="game-info">
+        <h3>PUBG Mobile</h3>
+        <p>Mobile multiplayer action game.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://play.google.com/store/apps/details?id=com.tencent.ig')">Get</button>
+          <button class="save-game" onclick="saveGame('PUBG Mobile')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="Free Fire"
+      data-category="action multiplayer"
+      data-devices="android tablet">
+      <div class="poster">🔥</div>
+      <div class="game-info">
+        <h3>Free Fire</h3>
+        <p>Online multiplayer survival game.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://play.google.com/store/apps/details?id=com.dts.freefireth')">Get</button>
+          <button class="save-game" onclick="saveGame('Free Fire')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="Call of Duty Mobile"
+      data-category="action multiplayer"
+      data-devices="android tablet">
+      <div class="poster">🎖️</div>
+      <div class="game-info">
+        <h3>Call of Duty Mobile</h3>
+        <p>Mobile multiplayer action game.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://play.google.com/store/apps/details?id=com.activision.callofduty.shooter')">Get</button>
+          <button class="save-game" onclick="saveGame('Call of Duty Mobile')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="eFootball"
+      data-category="sports"
+      data-devices="android iphone tablet">
+      <div class="poster">⚽</div>
+      <div class="game-info">
+        <h3>eFootball</h3>
+        <p>Digital football experience.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://www.konami.com/efootball/')">Visit</button>
+          <button class="save-game" onclick="saveGame('eFootball')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="Asphalt Legends"
+      data-category="racing"
+      data-devices="android iphone tablet">
+      <div class="poster">🏎️</div>
+      <div class="game-info">
+        <h3>Asphalt Legends</h3>
+        <p>High-speed arcade racing.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://asphaltlegends.com/')">Visit</button>
+          <button class="save-game" onclick="saveGame('Asphalt Legends')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="Minecraft"
+      data-category="adventure"
+      data-devices="android iphone tablet laptop">
+      <div class="poster">⛏️</div>
+      <div class="game-info">
+        <h3>Minecraft</h3>
+        <p>Build, create and explore.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://www.minecraft.net/')">Visit</button>
+          <button class="save-game" onclick="saveGame('Minecraft')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="Browser Puzzle Games"
+      data-category="puzzle"
+      data-devices="android iphone tablet laptop tv">
+      <div class="poster">🧩</div>
+      <div class="game-info">
+        <h3>Browser Puzzle Games</h3>
+        <p>Play puzzle games in your browser.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://www.crazygames.com/t/puzzle')">Play</button>
+          <button class="save-game" onclick="saveGame('Browser Puzzle Games')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" data-name="Browser Racing Games"
+      data-category="racing"
+      data-devices="android iphone tablet laptop tv">
+      <div class="poster">🚗</div>
+      <div class="game-info">
+        <h3>Browser Racing Games</h3>
+        <p>Discover racing games online.</p>
+        <div class="game-actions">
+          <button onclick="openGame('https://www.crazygames.com/t/racing')">Play</button>
+          <button class="save-game" onclick="saveGame('Browser Racing Games')">＋ My Games</button>
+        </div>
+      </div>
+    </article>
+
+  </div>
+  <p class="empty-message hidden" id="noGames">No matching games found.</p>
+</section>
+
+<section class="section">
+  <div class="section-title">
+    <h2>My Games</h2>
+    <small>Your saved collection</small>
+  </div>
+  <div id="myGames" class="poster-row"></div>
+  <p id="emptyMyGames" class="empty-message">Your saved games will appear here.</p>
+</section>
+
+<section class="section">
+  <div class="feature-card">
+    <h2>🎮 Roblox Experiences</h2>
+    <p>Discover games and experiences created by the Roblox community.</p>
+    <a class="link-button" href="https://www.roblox.com/games/" target="_blank" rel="noopener">Explore Roblox</a>
+    <a class="link-button" href="https://www.roblox.com/" target="_blank" rel="noopener">Roblox Home</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><h2>Online Gaming</h2></div>
+  <div class="feature-card">
+    <p>Explore browser games that can run on supported devices.</p>
+    <a class="link-button" href="https://www.crazygames.com/" target="_blank" rel="noopener">CrazyGames</a>
+    <a class="link-button" href="https://www.crazygames.com/c/action" target="_blank" rel="noopener">Action</a>
+    <a class="link-button" href="https://www.crazygames.com/t/racing" target="_blank" rel="noopener">Racing</a>
+    <a class="link-button" href="https://www.crazygames.com/t/puzzle" target="_blank" rel="noopener">Puzzle</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><h2>STRIPON Game Distribution</h2></div>
+  <div class="feature-card">
+    <h2>Publish Games on STRIPON</h2>
+    <p>Space for authorised game developers to provide downloadable games and browser experiences.</p>
+    <p>Actual game downloads require authorised game files and suitable hosting.</p>
+    <button class="primary-button" onclick="alert('Game developer distribution setup is not connected yet.')">Developer Area</button>
+  </div>
+</section>
+
+<!-- AVATAR GALLERY -->
+
+<section class="section avatar-gallery" id="avatarGallery">
+  <div class="avatar-heading">
+    <span>STRIPON PLAYER CUSTOMIZATION</span>
+    <h2>Choose Your Avatar</h2>
+    <p>Explore 20,000 generated avatar designs.</p>
+  </div>
+
+  <div class="avatar-profile">
+    <img id="selectedAvatar" alt="Selected avatar" src="">
+    <div>
+      <strong>Your Selected Avatar</strong>
+      <p id="avatarStatus">Choose an avatar below</p>
+    </div>
+  </div>
+
+  <div class="avatar-controls">
+    <input id="avatarSearch" type="search" placeholder="Search avatars...">
+    <select id="avatarCategory">
+      <option value="all">All Categories</option>
+      <option value="anime">Anime</option>
+      <option value="cars">Cars</option>
+      <option value="nature">Nature</option>
+      <option value="tech">Computers & Technology</option>
+      <option value="animals">Animals</option>
+    </select>
+    <button type="button" id="randomAvatar">Random Avatar</button>
+  </div>
+
+  <div class="avatar-count">
+    <span id="avatarTotal">20,000 avatars available</span>
+    <span id="avatarPage">Page 1</span>
+  </div>
+
+  <div class="avatar-grid" id="avatarGrid"></div>
+
+  <div class="avatar-pagination">
+    <button type="button" id="avatarPrevious">Previous</button>
+    <button type="button" id="avatarNext">Next</button>
+  </div>
+
+  <button type="button" id="saveAvatar" class="avatar-save">
+    Save Avatar to My Profile
+  </button>
+</section>
+
+</main>
+
+<footer>
+  <p>STRIPON GAMING</p>
+  <p>Games, players and experiences in one place.</p>
+  <a href="index.html">Back to STRIPON Home</a>
+</footer>
+
+<!-- PLAYER PROFILE PANEL -->
+
+<div class="panel" id="profilePanel">
+  <div class="panel-content">
+    <h2>STRIPON Player Profile</h2>
+    <p>Create a player identity using a nickname. You do not need to enter your real name.</p>
+
+    <img id="profilePreview" class="profile-avatar-preview" alt="Profile avatar">
+
+    <label for="playerName">Player name / Gamertag</label>
+    <input id="playerName" maxlength="24" placeholder="Enter your player name">
+
+    <p id="profileAvatarMessage">Choose an avatar from the gallery.</p>
+
+    <div class="panel-buttons">
+      <button class="primary-button" onclick="saveProfile()">Save Profile</button>
+      <button class="secondary-button" onclick="closePanel('profilePanel')">Close</button>
+    </div>
+
+    <button class="secondary-button" style="width:100%;margin-top:12px"
+      onclick="signOutProfile()">Sign Out</button>
+
+    <p style="font-size:11px;color:#c4b5fd;line-height:1.5">
+      Google sign-in is not connected yet. This profile is saved on this device.
+    </p>
+  </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+
+<div class="panel" id="settingsPanel">
+  <div class="panel-content">
+    <h2>Gaming Settings</h2>
+
+    <label><input type="checkbox" id="animationsSetting" checked> Enable animations</label>
+    <label><input type="checkbox" id="touchSetting" checked> Show touch-control guide</label>
+    <label><input type="checkbox" id="vibrationSetting"> Vibration preference</label>
+
+    <label for="textSize">Text size</label>
+    <select id="textSize">
+      <option value="normal">Normal</option>
+      <option value="large">Large</option>
+    </select>
+
+    <label for="volumeSetting">Sound preference</label>
+    <input type="range" id="volumeSetting" min="0" max="100" value="70">
+
+    <div class="panel-buttons">
+      <button class="primary-button" onclick="saveSettings()">Save Settings</button>
+      <button class="secondary-button" onclick="closePanel('settingsPanel')">Close</button>
+    </div>
+
+    <p style="font-size:11px;color:#c4b5fd">
+      These are STRIPON preferences. They do not control the sound or internal controls of third-party games.
+    </p>
+  </div>
+</div>
+
+<!-- REPORT PANEL -->
+
+<div class="panel" id="reportPanel">
+  <div class="panel-content">
+    <h2>Report a Problem</h2>
+
+    <label for="reportType">Report type</label>
+    <select id="reportType">
+      <option>Game problem</option>
+      <option>Broken link</option>
+      <option>Profile problem</option>
+      <option>Suggestion</option>
+      <option>Other</option>
+    </select>
+
+    <label for="reportGame">Game name (optional)</label>
+    <input id="reportGame" placeholder="Game name">
+
+    <label for="reportDescription">Description</label>
+    <textarea id="reportDescription" placeholder="Describe the issue..."></textarea>
+
+    <div class="panel-buttons">
+      <button class="primary-button" onclick="sendReport()">Prepare Report</button>
+      <button class="secondary-button" onclick="closePanel('reportPanel')">Close</button>
+    </div>
+
+    <p style="font-size:11px;color:#c4b5fd">
+      This opens your email app with the report prepared. You must press Send in your email app.
+    </p>
+  </div>
+</div>
+
+<!-- LANDSCAPE REMINDER -->
+
+<div class="panel" id="rotatePanel">
+  <div class="panel-content">
+    <h2>📱 Rotate Your Device</h2>
+    <p>This game may work better in landscape (horizontal) mode.</p>
+    <button class="primary-button" onclick="closePanel('rotatePanel')">Continue</button>
+  </div>
+</div>
+
+<script>
+/* PROFILE */
+
+let playerProfile = null;
+
+function loadProfile() {
+  try {
+    playerProfile = JSON.parse(
+      localStorage.getItem("striponPlayerProfile") || "null"
+    );
+  } catch {
+    playerProfile = null;
+  }
+  updateProfileButton();
+}
+
+function updateProfileButton() {
+  const button = document.getElementById("profileButton");
+
+  if (playerProfile && playerProfile.name) {
+    button.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = playerProfile.avatar || "";
+    img.alt = "";
+    const span = document.createElement("span");
+    span.textContent = playerProfile.name;
+    button.append(img, span);
+  } else {
+    button.textContent = "👤 Profile";
+  }
+}
+
+function openProfile() {
+  document.getElementById("playerName").value =
+    playerProfile?.name || "";
+
+  document.getElementById("profilePreview").src =
+    playerProfile?.avatar || selectedAvatar?.image || "";
+
+  document.getElementById("profileAvatarMessage").textContent =
+    selectedAvatar?.name || playerProfile?.avatarName ||
+    "Choose an avatar from the gallery.";
+
+  openPanel("profilePanel");
+}
+
+function saveProfile() {
+  const name = document.getElementById("playerName").value.trim();
+
+  if (!name) {
+    alert("Please enter a player name.");
+    return;
+  }
+
+  if (name.length < 2) {
+    alert("Your player name must have at least 2 characters.");
+    return;
+  }
+
+  const avatar = selectedAvatar?.image || playerProfile?.avatar || "";
+
+  playerProfile = {
+    name,
+    avatar,
+    avatarName: selectedAvatar?.name || playerProfile?.avatarName || ""
+  };
+
+  localStorage.setItem(
+    "striponPlayerProfile",
+    JSON.stringify(playerProfile)
+  );
+
+  updateProfileButton();
+  closePanel("profilePanel");
+  alert("Your STRIPON player profile has been saved.");
+}
+
+function signOutProfile() {
+  if (!confirm("Sign out of this STRIPON player profile?")) return;
+
+  playerProfile = null;
+  localStorage.removeItem("striponPlayerProfile");
+  updateProfileButton();
+  closePanel("profilePanel");
+}
+
+function openGame(url) {
+  if (!playerProfile || !playerProfile.name) {
+    alert("Please create your STRIPON player profile first.");
+    openProfile();
+    return;
+  }
+
+  window.open(url, "_blank", "noopener");
+}
+
+/* PANELS */
+
+function openPanel(id) {
+  document.getElementById(id).classList.add("open");
+}
+
+function closePanel(id) {
+  document.getElementById(id).classList.remove("open");
+}
+
+/* GAME SEARCH AND FILTERS */
+
+let activeCategory = "all";
+
+const gameSearch = document.getElementById("gameSearch");
+const deviceSelect = document.getElementById("deviceSelect");
+const gameCards = [...document.querySelectorAll("#popularGames .game-card")];
+
+function filterGames() {
+  const term = gameSearch.value.toLowerCase().trim();
+  const device = deviceSelect.value;
+  let visible = 0;
+
+  gameCards.forEach(card => {
+    const name = card.dataset.name.toLowerCase();
+    const categories = card.dataset.category.split(" ");
+    const devices = card.dataset.devices.split(" ");
+
+    const matchesSearch = name.includes(term);
+    const matchesCategory =
+      activeCategory === "all" || categories.includes(activeCategory);
+    const matchesDevice =
+      device === "all" || devices.includes(device);
+
+    const show = matchesSearch && matchesCategory && matchesDevice;
+
+    card.classList.toggle("hidden", !show);
+    if (show) visible++;
+  });
+
+  document.getElementById("noGames").classList.toggle("hidden", visible > 0);
+}
+
+gameSearch.addEventListener("input", filterGames);
+deviceSelect.addEventListener("change", filterGames);
+
+document.querySelectorAll("#categoryFilters button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("#categoryFilters button")
+      .forEach(b => b.classList.remove("active"));
+
+    button.classList.add("active");
+    activeCategory = button.dataset.category;
+    filterGames();
+  });
+});
+
+/* MY GAMES */
+
+function getSavedGames() {
+  try {
+    return JSON.parse(localStorage.getItem("striponMyGames") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveGame(name) {
+  if (!playerProfile || !playerProfile.name) {
+    alert("Create your player profile before saving games.");
+    openProfile();
+    return;
+  }
+
+  const games = getSavedGames();
+
+  if (!games.includes(name)) {
+    games.push(name);
+    localStorage.setItem("striponMyGames", JSON.stringify(games));
+  }
+
+  renderMyGames();
+}
+
+function removeGame(name) {
+  const games = getSavedGames().filter(game => game !== name);
+  localStorage.setItem("striponMyGames", JSON.stringify(games));
+  renderMyGames();
+}
+
+function renderMyGames() {
+  const container = document.getElementById("myGames");
+  const empty = document.getElementById("emptyMyGames");
+  container.innerHTML = "";
+
+  const games = getSavedGames();
+  empty.classList.toggle("hidden", games.length > 0);
+
+  games.forEach(name => {
+    const card = document.createElement("article");
+    card.className = "game-card";
+
+    const info = document.createElement("div");
+    info.className = "game-info";
+
+    const title = document.createElement("h3");
+    title.textContent = name;
+
+    const remove = document.createElement("button");
+    remove.className = "secondary-button";
+    remove.textContent = "Remove";
+    remove.addEventListener("click", () => removeGame(name));
+
+    info.append(title, remove);
+    card.append(info);
+    container.append(card);
+  });
+}
+
+/* AVATAR GALLERY: 20,000 GENERATED DESIGNS */
+
+const avatarCategories = {
+  anime: {
+    label:"Anime",
+    icons:["🥷","🧙","🦸","🧝","👩‍🎤","🧑‍🚀","🧑‍🎨","🧑‍🚀"]
+  },
+  cars: {
+    label:"Cars",
+    icons:["🏎️","🚗","🚙","🏍️","🚘","🚕","🚓","🚜"]
+  },
+  nature: {
+    label:"Nature",
+    icons:["🌳","🌲","🌻","🌊","🌋","🌴","🌺","🍀"]
+  },
+  tech: {
+    label:"Technology",
+    icons:["💻","🖥️","🎮","🤖","⌨️","📱","🕹️","🚀"]
+  },
+  animals: {
+    label:"Animals",
+    icons:["🐺","🦊","🐼","🦁","🐯","🐸","🦅","🐬"]
+  }
+};
+
+const avatarColors = [
+  "#7c3aed","#2563eb","#db2777","#0891b2",
+  "#059669","#ea580c","#9333ea","#be123c",
+  "#4f46e5","#0f766e","#a16207","#6d28d9",
+  "#1d4ed8","#a21caf","#047857","#c2410c"
+];
+
+const AVATAR_TOTAL = 20000;
+const AVATAR_PAGE_SIZE = 40;
+
+let avatarPage = 0;
+let selectedAvatar = null;
+let filteredAvatars = [];
+
+function makeAvatar(id) {
+  const keys = Object.keys(avatarCategories);
+  const categoryIndex = Math.floor(id / 4000);
+  const key = keys[categoryIndex];
+  const category = avatarCategories[key];
+  const variation = id % 4000;
+
+  const icon = category.icons[variation % category.icons.length];
+  const color1 = avatarColors[(id * 7) % avatarColors.length];
+  const color2 = avatarColors[(id * 3 + 5) % avatarColors.length];
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg"
+      width="160" height="160" viewBox="0 0 160 160">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="${color1}"/>
+          <stop offset="1" stop-color="${color2}"/>
+        </linearGradient>
+      </defs>
+      <rect width="160" height="160" rx="35" fill="url(#g)"/>
+      <circle cx="80" cy="80" r="58" fill="white" opacity=".13"/>
+      <text x="80" y="103" text-anchor="middle" font-size="75">${icon}</text>
+      <text x="80" y="148" text-anchor="middle" font-size="9" fill="white">STRIPON</text>
+    </svg>`;
+
+  return {
+    id,
+    key,
+    name:category.label + " Avatar " + (variation + 1),
+    image:"data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg)
+  };
+}
+
+function updateAvatarFilter() {
+  const term = document.getElementById("avatarSearch").value.trim().toLowerCase();
+  const chosenCategory = document.getElementById("avatarCategory").value;
+
+  filteredAvatars = [];
+
+  /* Generate only the selected category's range.
+     This keeps the page responsive. */
+
+  let start = 0;
+  let end = AVATAR_TOTAL;
+
+  if (chosenCategory !== "all") {
+    const keys = Object.keys(avatarCategories);
+    const index = keys.indexOf(chosenCategory);
+    start = index * 4000;
+    end = start + 4000;
+  }
+
+  for (let id = start; id < end; id++) {
+    const avatar = makeAvatar(id);
+
+    if (term &&
+        !avatar.name.toLowerCase().includes(term) &&
+        !avatar.key.includes(term)) continue;
+
+    filteredAvatars.push(avatar);
+  }
+}
+
+function renderAvatars() {
+  updateAvatarFilter();
+
+  const grid = document.getElementById("avatarGrid");
+  grid.innerHTML = "";
+
+  const start = avatarPage * AVATAR_PAGE_SIZE;
+  const items = filteredAvatars.slice(start, start + AVATAR_PAGE_SIZE);
+
+  items.forEach(avatar => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "avatar-card" +
+      (selectedAvatar && selectedAvatar.id === avatar.id ? " selected" : "");
+
+    const image = document.createElement("img");
+    image.src = avatar.image;
+    image.alt = avatar.name;
+    image.loading = "lazy";
+
+    const label = document.createElement("span");
+    label.textContent = avatar.name;
+
+    button.append(image, label);
+
+    button.addEventListener("click", () => {
+      selectedAvatar = avatar;
+      showSelectedAvatar();
+      renderAvatars();
+    });
+
+    grid.append(button);
+  });
+
+  document.getElementById("avatarTotal").textContent =
+    filteredAvatars.length.toLocaleString() + " avatars found";
+
+  document.getElementById("avatarPage").textContent =
+    filteredAvatars.length
+      ? "Page " + (avatarPage + 1) + " of " +
+        Math.ceil(filteredAvatars.length / AVATAR_PAGE_SIZE)
+      : "No results";
+
+  document.getElementById("avatarPrevious").disabled = avatarPage === 0;
+  document.getElementById("avatarNext").disabled =
+    start + AVATAR_PAGE_SIZE >= filteredAvatars.length;
+
+  if (!items.length) {
+    const message = document.createElement("p");
+    message.className = "empty-message";
+    message.textContent = "No avatars found. Try another search.";
+    grid.append(message);
+  }
+}
+
+function showSelectedAvatar() {
+  if (!selectedAvatar) return;
+
+  document.getElementById("selectedAvatar").src = selectedAvatar.image;
+  document.getElementById("avatarStatus").textContent = selectedAvatar.name;
+  document.getElementById("profilePreview").src = selectedAvatar.image;
+  document.getElementById("profileAvatarMessage").textContent =
+    selectedAvatar.name;
+}
+
+document.getElementById("avatarSearch").addEventListener("input", () => {
+  avatarPage = 0;
+  renderAvatars();
+});
+
+document.getElementById("avatarCategory").addEventListener("change", () => {
+  avatarPage = 0;
+  renderAvatars();
+});
+
+document.getElementById("avatarPrevious").addEventListener("click", () => {
+  if (avatarPage > 0) {
+    avatarPage--;
+    renderAvatars();
+  }
+});
+
+document.getElementById("avatarNext").addEventListener("click", () => {
+  if ((avatarPage + 1) * AVATAR_PAGE_SIZE < filteredAvatars.length) {
+    avatarPage++;
+    renderAvatars();
+  }
+});
+
+document.getElementById("randomAvatar").addEventListener("click", () => {
+  const id = Math.floor(Math.random() * AVATAR_TOTAL);
+  selectedAvatar = makeAvatar(id);
+  avatarPage = Math.floor(id / AVATAR_PAGE_SIZE);
+  showSelectedAvatar();
+  renderAvatars();
+});
+
+document.getElementById("saveAvatar").addEventListener("click", () => {
+  if (!selectedAvatar) {
+    alert("Please select an avatar first.");
+    return;
+  }
+
+  try {
+    localStorage.setItem("striponSelectedAvatar",
+      JSON.stringify(selectedAvatar));
+
+    if (playerProfile) {
+      playerProfile.avatar = selectedAvatar.image;
+      playerProfile.avatarName = selectedAvatar.name;
+      localStorage.setItem("striponPlayerProfile",
+        JSON.stringify(playerProfile));
+      updateProfileButton();
+    }
+
+    showSelectedAvatar();
+    alert("Avatar saved successfully!");
+  } catch {
+    alert("Could not save avatar. Please try again.");
+  }
+});
+
+/* SETTINGS */
+
+function saveSettings() {
+  const settings = {
+    animations:document.getElementById("animationsSetting").checked,
+    touch:document.getElementById("touchSetting").checked,
+    vibration:document.getElementById("vibrationSetting").checked,
+    textSize:document.getElementById("textSize").value,
+    volume:document.getElementById("volumeSetting").value
+  };
+
+  localStorage.setItem("striponGamingSettings", JSON.stringify(settings));
+
+  document.body.style.fontSize =
+    settings.textSize === "large" ? "18px" : "";
+
+  closePanel("settingsPanel");
+  alert("Settings saved.");
+}
+
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem("striponGamingSettings") || "null");
+    if (!s) return;
+
+    document.getElementById("animationsSetting").checked = s.animations;
+    document.getElementById("touchSetting").checked = s.touch;
+    document.getElementById("vibrationSetting").checked = s.vibration;
+    document.getElementById("textSize").value = s.textSize;
+    document.getElementById("volumeSetting").value = s.volume;
+
+    document.body.style.fontSize =
+      s.textSize === "large" ? "18px" : "";
+  } catch {}
+}
+
+/* REPORT */
+
+function sendReport() {
+  const type = document.getElementById("reportType").value;
+  const game = document.getElementById("reportGame").value.trim();
+  const description = document.getElementById("reportDescription").value.trim();
+
+  if (!description) {
+    alert("Please describe the problem.");
+    return;
+  }
+
+  const subject = encodeURIComponent("STRIPON Gaming Report: " + type);
+  const body = encodeURIComponent(
+    "Report type: " + type +
+    "\nGame: " + game +
+    "\nPlayer: " + (playerProfile?.name || "Not signed in") +
+    "\n\nDescription:\n" + description
+  );
+
+  window.location.href =
+    "mailto:finlayomari3@gmail.com?subject=" + subject + "&body=" + body;
+}
+
+/* INITIALIZE */
+
+loadProfile();
+loadSettings();
+renderMyGames();
+
+try {
+  const savedAvatar = JSON.parse(
+    localStorage.getItem("striponSelectedAvatar") || "null"
+  );
+
+  if (savedAvatar) {
+    selectedAvatar = savedAvatar;
+    showSelectedAvatar();
+  }
+} catch {}
+
+renderAvatars();
+filterGames();
+</script>
+
+</body>
+</html>
