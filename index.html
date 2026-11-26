@@ -464,8 +464,9 @@ header{
 
  <div class="search-panel" id="searchPanel">
   <input id="searchInput" type="search"
-   placeholder="Search videos and creators..."
-   oninput="filterVideos();loadYouTubeVideos()">
+   placeholder="Search YouTube videos..."
+   oninput="filterVideos();scheduleYouTubeSearch()"
+   onkeydown="if(event.key==='Enter'){loadYouTubeVideos()}">
   <button onclick="clearSearch()" aria-label="Clear search">✕</button>
  </div>
 
@@ -545,7 +546,7 @@ header{
    <span class="duration">08:30</span>
   </div>
   <div class="info">
-   <img class="avatar" loading="lazy" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100" alt="Creator">
+   <img class="avatar" loading="lazy" src="https://images.unsplash.com/photo-1506794778202-cad84cf45d1f?w=100" alt="Creator">
    <div class="description">
     <h3>Discover the Future of Technology</h3>
     <p>Tech World · Technology</p>
@@ -690,9 +691,10 @@ header{
 </nav>
 
 <script>
+
 /* STRIPON SETTINGS */
 
-/* Paste your YouTube Data API v3 key between the quotes. */
+/* Add your YouTube Data API v3 key here. */
 const YOUTUBE_API_KEY = "PASTE_YOUR_YOUTUBE_API_KEY_HERE";
 
 const YOUTUBE_REGION = "KE";
@@ -714,6 +716,7 @@ let currentCommentCard=null;
 let youtubeMode="fresh";
 let youtubeVideos=[];
 let youtubeRequestNumber=0;
+let youtubeSearchTimer=null;
 
 function safeRead(key,fallback){
  try{
@@ -739,12 +742,12 @@ function getVideoTitle(card){
 }
 
 function getVideoUrl(card){
- if(card.dataset.youtubeId){
-  return "https://www.youtube.com/watch?v="+card.dataset.youtubeId;
+ if(card.dataset.youtubeId||card.dataset.videoId){
+  const id=card.dataset.youtubeId||card.dataset.videoId;
+  return "https://www.youtube.com/watch?v="+id;
  }
- if(card.dataset.video){
-  return card.dataset.video;
- }
+ if(card.dataset.video)return card.dataset.video;
+
  return "https://www.youtube.com/results?search_query="+
  encodeURIComponent(getVideoTitle(card));
 }
@@ -756,6 +759,14 @@ function toggleSearch(){
  if(panel.classList.contains("show")){
   document.getElementById("searchInput").focus();
  }
+}
+
+function scheduleYouTubeSearch(){
+ clearTimeout(youtubeSearchTimer);
+
+ youtubeSearchTimer=setTimeout(()=>{
+  loadYouTubeVideos();
+ },650);
 }
 
 function clearSearch(){
@@ -992,71 +1003,88 @@ async function copyText(value){
   t.remove();
  }
 }
- 
-function openVideo(area){
-  const card=area.closest(".video-card,.youtube-card");
 
-  if(!card)return;
+async function shareVideo(){
+ if(!selectedCard)return;
 
-  const id=card.dataset.youtubeId;
-  const video=card.dataset.video;
+ const data={
+  title:getVideoTitle(selectedCard),
+  url:getVideoUrl(selectedCard)
+ };
 
-  // Sample cards search for real YouTube videos inside STRIPON
-  if(!id && !video){
-    const query=getVideoTitle(card);
-
-    document.getElementById("searchInput").value=query;
-    document.getElementById("searchPanel").classList.add("show");
-
-    activeCategory="All";
-    youtubeMode="fresh";
-
-    document.querySelectorAll(".category").forEach(b=>{
-      b.classList.toggle("active",b.textContent.trim()==="All");
-    });
-
-    loadYouTubeVideos();
-
-    document.getElementById("youtubeFeed").scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-
-    return;
+ try{
+  if(navigator.share){
+   await navigator.share(data);
+  }else{
+   await copyText(data.url);
+   alert("Link copied.");
   }
+ }catch(e){}
 
-  document.getElementById("videoName").textContent=getVideoTitle(card);
-
-  const player=document.getElementById("videoPlayer");
-  const frameBox=document.getElementById("youtubePlayer");
-
-  player.style.display="none";
-  frameBox.replaceChildren();
-
-  if(id){
-    const frame=document.createElement("iframe");
-
-    frame.src="https://www.youtube-nocookie.com/embed/"+
-      encodeURIComponent(id)+"?autoplay=1&rel=0";
-
-    frame.title="YouTube video player";
-
-    frame.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-
-    frame.allowFullscreen=true;
-
-    frameBox.appendChild(frame);
-
-  }else if(video){
-    player.src=video;
-    player.style.display="block";
-    player.play().catch(()=>{});
-  }
-
-  document.getElementById("videoScreen").classList.add("show");
+ closeMenu();
 }
 
+async function copyLink(){
+ try{
+  await copyText(
+   selectedCard?getVideoUrl(selectedCard):location.href
+  );
+
+  alert("Link copied.");
+ }catch(e){
+  alert("Could not copy link.");
+ }
+
+ closeMenu();
+}
+
+function reportVideo(){
+ alert("Thank you. This demo records no report on a server.");
+ closeMenu();
+}
+
+/* UPDATED IN-APP VIDEO PLAYER */
+
+function openVideo(area){
+ const card=area.closest(".video-card,.youtube-card");
+
+ if(!card)return;
+
+ const id=card.dataset.youtubeId||card.dataset.videoId;
+ const video=card.dataset.video;
+
+ /* Sample cards now search for matching YouTube videos in STRIPON. */
+ if(!id&&!video){
+  const input=document.getElementById("searchInput");
+
+  input.value=getVideoTitle(card);
+
+  document.getElementById("searchPanel").classList.add("show");
+
+  activeCategory="All";
+
+  document.querySelectorAll(".category").forEach(b=>{
+   b.classList.toggle("active",b.textContent.trim()==="All");
+  });
+
+  loadYouTubeVideos();
+
+  document.getElementById("youtubeFeed").scrollIntoView({
+   behavior:"smooth",
+   block:"start"
+  });
+
+  return;
+ }
+
+ document.getElementById("videoName").textContent=getVideoTitle(card);
+
+ const player=document.getElementById("videoPlayer");
  const frameBox=document.getElementById("youtubePlayer");
+
+ player.pause();
+ player.removeAttribute("src");
+ player.load();
 
  player.style.display="none";
  frameBox.replaceChildren();
@@ -1068,12 +1096,14 @@ function openVideo(area){
    "https://www.youtube-nocookie.com/embed/"+
    encodeURIComponent(id)+"?autoplay=1&rel=0";
 
-  frame.title="YouTube video player";
+  frame.title="STRIPON YouTube Player";
 
   frame.allow=
    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
 
   frame.allowFullscreen=true;
+
+  frame.referrerPolicy="strict-origin-when-cross-origin";
 
   frameBox.appendChild(frame);
 
@@ -1083,17 +1113,6 @@ function openVideo(area){
   player.style.display="block";
   player.play().catch(()=>{});
 
- }else{
-
-  /* Sample cards open a YouTube search instead of a broken player. */
-  window.open(
-   "https://www.youtube.com/results?search_query="+
-   encodeURIComponent(getVideoTitle(card)),
-   "_blank",
-   "noopener"
-  );
-
-  return;
  }
 
  document.getElementById("videoScreen").classList.add("show");
@@ -1152,22 +1171,23 @@ async function loadYouTubeVideos(){
 
  if(
   !YOUTUBE_API_KEY||
-  YOUTUBE_API_KEY==="AIzaSyCq3HJVII5iGgN-MGINx7vk_CDPgznCNMU"
+  YOUTUBE_API_KEY==="PASTE_YOUR_YOUTUBE_API_KEY_HERE"
  ){
   container.innerHTML=
-   '<p class="youtube-status">YouTube discovery is ready to configure. Add your YouTube Data API v3 key in the YOUTUBE_API_KEY setting in this file.</p>';
+   '<p class="youtube-status">YouTube search is ready. Add your YouTube Data API v3 key in the YOUTUBE_API_KEY setting to activate video discovery.</p>';
   return;
  }
 
  const requestNumber=++youtubeRequestNumber;
 
  container.innerHTML=
-  '<p class="youtube-status">Loading videos…</p>';
+  '<p class="youtube-status">Loading YouTube videos…</p>';
 
  try{
   const common={
    part:"snippet",
    type:"video",
+   videoEmbeddable:"true",
    maxResults:"12",
    regionCode:YOUTUBE_REGION,
    safeSearch:"moderate"
@@ -1181,6 +1201,10 @@ async function loadYouTubeVideos(){
 
   if(youtubeMode==="popular"){
 
+   /*
+    Popular uses YouTube's mostPopular chart.
+    Search-based feeds use videoEmbeddable=true.
+   */
    const p={
     part:"snippet,statistics,contentDetails",
     chart:"mostPopular",
@@ -1237,7 +1261,7 @@ async function loadYouTubeVideos(){
    }
   }
 
-  /* Ignore old responses if the user changed category or search. */
+  /* Ignore old responses after a new search. */
   if(requestNumber!==youtubeRequestNumber)return;
 
   youtubeVideos=results;
@@ -1276,7 +1300,7 @@ function renderYouTubeVideos(){
   const p=document.createElement("p");
 
   p.className="youtube-status";
-  p.textContent="No videos found. Try another category or refresh.";
+  p.textContent="No videos found. Try another search or refresh.";
 
   container.appendChild(p);
 
@@ -1305,7 +1329,6 @@ function renderYouTubeVideos(){
   card.dataset.youtubeId=id;
   card.dataset.videoId=id;
 
-  /* Results from a category search belong to that selected category. */
   card.dataset.category=activeCategory;
 
   const area=document.createElement("div");
@@ -1349,7 +1372,7 @@ function renderYouTubeVideos(){
   original.rel="noopener noreferrer";
   original.textContent="Open YouTube";
 
-  actions.append(watch);
+  actions.append(watch,original);
 
   info.append(h,p,actions);
 
@@ -1366,7 +1389,8 @@ document.addEventListener("DOMContentLoaded",()=>{
  addVideoActions();
  loadYouTubeVideos();
 });
+
 </script>
 
 </body>
-  </html>
+</html>
