@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d17">
+<title>STRIPON HOME</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#090d17;color:white;font-family:Arial,sans-serif;padding-bottom:95px}
+button{font:inherit;cursor:pointer;color:white}
+a{text-decoration:none;color:inherit}
+
+/* HEADER */
+header{background:#0b101b;padding:15px 16px 0;position:sticky;top:0;z-index:50}
+.top{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:9px;font-size:25px;font-weight:bold}
+.brand-icon{width:43px;height:43px;border-radius:50%;background:#1475f5;display:grid;place-items:center;font-size:24px}
+.search-icon{background:none;border:none;font-size:29px}
+.search-panel{display:none;padding:12px 0;gap:8px}
+.search-panel.show{display:flex}
+.search-panel input{flex:1;min-width:0;padding:12px 15px;border-radius:25px;border:1px solid #34435b;background:#1b2638;color:white;outline:none}
+.search-panel button{border:0;background:#252b36;padding:0 14px;border-radius:20px}
+
+/* CATEGORY BAR */
+.categories{display:flex;gap:10px;overflow-x:auto;white-space:nowrap;padding:17px 0 13px;scrollbar-width:none}
+.categories::-webkit-scrollbar,.discovery-tabs::-webkit-scrollbar{display:none}
+.category{flex-shrink:0;border:0;border-radius:8px;padding:10px 18px;background:#252b36;color:white;font-size:14px;font-weight:600}
+.category.active{background:white;color:#111}
+
+/* MAIN FEED */
+.feed{max-width:850px;margin:auto;padding:15px 13px}
+.video-card{background:#151b27;border-radius:18px;overflow:hidden;margin-bottom:22px;box-shadow:0 5px 18px #0005}
+.thumbnail{width:100%;aspect-ratio:16/9;position:relative;background:#202a3a;cursor:pointer}
+.thumbnail img{width:100%;height:100%;object-fit:cover;display:block}
+.duration{position:absolute;bottom:10px;right:10px;background:#000c;padding:5px 7px;border-radius:5px;font-size:12px}
+.info{display:flex;align-items:flex-start;padding:13px 12px 15px;gap:11px}
+.avatar{height:43px;width:43px;flex-shrink:0;border-radius:50%;object-fit:cover;background:#7038bc}
+.description{flex:1;min-width:0}
+.description h3{font-size:16px;line-height:1.4;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.description p{color:#9da6b7;font-size:13px;margin-top:6px;line-height:1.4}
+.dots{background:none;border:none;font-size:24px;padding:0 3px}
+
+/* VIDEO ACTIONS */
+.video-actions{display:flex;align-items:center;gap:9px;padding:0 12px 14px;flex-wrap:wrap}
+.video-action{display:flex;align-items:center;gap:6px;border:1px solid #303b4d;background:#202a39;border-radius:22px;padding:9px 13px;font-size:13px;color:white}
+.video-action.liked{background:#163d75;border-color:#2782ff;color:#62a5ff}
+.video-action span{font-size:17px}
+
+/* YOUTUBE DISCOVERY */
+.youtube-discovery{padding:15px 13px;max-width:850px;margin:auto}
+.discovery-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.discovery-heading h2{font-size:19px}
+.discovery-heading button{background:#202a39;border:0;border-radius:20px;padding:9px 13px}
+.discovery-tabs{display:flex;gap:9px;overflow-x:auto;padding:15px 0;scrollbar-width:none}
+.discovery-tab{white-space:nowrap;background:#252b36;color:white;border:0;border-radius:20px;padding:10px 15px}
+.discovery-tab.active{background:white;color:#111}
+.youtube-card{background:#151b27;border-radius:14px;overflow:hidden;margin-bottom:17px;box-shadow:0 5px 18px #0004}
+.youtube-card .thumbnail img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.youtube-card-info{padding:12px}
+.youtube-card-info h3{font-size:15px;line-height:1.4}
+.youtube-card-info p{color:#aab3c2;font-size:12px;margin-top:7px}
+.youtube-card-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.youtube-card-actions button,.youtube-card-actions a{background:#245caa;border:0;padding:10px 14px;border-radius:20px;font-size:13px;color:white}
+.youtube-status{color:#aab3c2;padding:20px 0;line-height:1.5}
+.section-title{font-size:19px;margin:12px 0}
+.empty{display:none;text-align:center;padding:45px 10px;color:#aab3c2}
+
+/* MENU AND OVERLAYS */
+.overlay{display:none;position:fixed;inset:0;background:#000a;z-index:100}
+.overlay.show{display:block}
+.menu{position:absolute;bottom:0;width:100%;background:#1a2231;border-radius:20px 20px 0 0;padding:20px}
+.menu button{width:100%;display:block;padding:16px 8px;text-align:left;border:0;border-bottom:1px solid #30394a;background:none}
+.player-content{position:absolute;top:8%;bottom:0;width:100%;background:#151b27;border-radius:20px 20px 0 0;padding:20px;overflow-y:auto}
+.player-content video{width:100%;margin-top:35px;background:black}
+.player-content iframe{width:100%;aspect-ratio:16/9;margin-top:35px;border:0;background:black}
+.close{float:right;background:none;border:0;font-size:25px}
+.player-title{margin-top:15px}
+.comment-modal{display:none;position:fixed;inset:0;background:#000b;z-index:300}
+.comment-modal.show{display:block}
+.comment-box{position:absolute;bottom:0;left:0;width:100%;height:75%;background:#151d2b;border-radius:20px 20px 0 0;padding:18px;display:flex;flex-direction:column}
+.comment-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:1px solid #303b4d}
+.comment-header button{background:none;border:0;font-size:24px}
+.comment-list{flex:1;overflow-y:auto;padding:15px 0}
+.comment-item{padding:12px 0;border-bottom:1px solid #303b4d}
+.comment-item strong{font-size:14px}
+.comment-item p{color:#d1d5df;margin-top:7px;font-size:14px;overflow-wrap:anywhere}
+.comment-input{display:flex;gap:8px;padding-top:12px}
+.comment-input input{flex:1;min-width:0;background:#263247;border:1px solid #45536a;color:white;padding:12px;border-radius:25px;outline:none}
+.comment-input button{border:0;background:#247cff;padding:0 18px;border-radius:25px}
+
+/* BOTTOM NAV */
+.bottom{position:fixed;bottom:0;left:0;width:100%;height:80px;background:#0b101b;border-top:1px solid #202b3c;display:flex;align-items:center;justify-content:space-around;z-index:80}
+.nav{display:flex;flex-direction:column;align-items:center;gap:5px;color:#8e98a9;font-size:11px;min-width:48px}
+.nav .symbol{font-size:25px}
+.nav.active{color:#2782ff}
+.create{width:66px;height:66px;border-radius:50%;background:#e1e3e8;color:#111;border:0;font-size:45px;display:grid;place-items:center;margin-top:-27px}
+
+@media(min-width:650px){
+ .feed,.youtube-discovery{max-width:700px}
+ header{padding-left:max(17px,calc((100% - 700px)/2));padding-right:max(17px,calc((100% - 700px)/2))}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="top">
+  <a href="index.html" class="brand">
+   <span class="brand-icon">▶</span>
+   <span>STRIPON</span>
+  </a>
+  <button class="search-icon" onclick="toggleSearch()">⌕</button>
+ </div>
+
+ <div class="search-panel" id="searchPanel">
+  <input id="searchInput" placeholder="Search videos, creators..." oninput="filterVideos()">
+  <button onclick="clearSearch()">✕</button>
+ </div>
+
+ <div class="categories" id="categories">
+  <button class="category active" onclick="chooseCategory('All',this)">All</button>
+  <button class="category" onclick="chooseCategory('Music',this)">Music</button>
+  <button class="category" onclick="chooseCategory('Gaming',this)">Gaming</button>
+  <button class="category" onclick="chooseCategory('Live',this)">Live</button>
+  <button class="category" onclick="chooseCategory('Mixes',this)">Mixes</button>
+  <button class="category" onclick="chooseCategory('Podcasts',this)">Podcasts</button>
+  <button class="category" onclick="chooseCategory('News',this)">News</button>
+  <button class="category" onclick="chooseCategory('Sports',this)">Sports</button>
+  <button class="category" onclick="chooseCategory('Technology',this)">Technology</button>
+  <button class="category" onclick="chooseCategory('Travel',this)">Travel</button>
+  <button class="category" onclick="chooseCategory('Nature',this)">Nature</button>
+  <button class="category" onclick="chooseCategory('Education',this)">Education</button>
+  <button class="category" onclick="chooseCategory('Comedy',this)">Comedy</button>
+  <button class="category" onclick="chooseCategory('Entertainment',this)">Entertainment</button>
+  <button class="category" onclick="chooseCategory('Recently uploaded',this)">Recently uploaded</button>
+ </div>
+</header>
+
+<!-- YOUTUBE DISCOVERY -->
+<section class="youtube-discovery">
+ <div class="discovery-heading">
+  <h2>🌍 Discover on YouTube</h2>
+  <button onclick="loadYouTubeVideos()">↻ Refresh</button>
+ </div>
+
+ <div class="discovery-tabs">
+  <button class="discovery-tab active" onclick="showYouTubeFeed('fresh',this)">Fresh</button>
+  <button class="discovery-tab" onclick="showYouTubeFeed('rising',this)">Rising</button>
+  <button class="discovery-tab" onclick="showYouTubeFeed('popular',this)">Popular</button>
+ </div>
+
+ <div id="youtubeFeed">
+  <p class="youtube-status">YouTube videos will appear here after you add your API key.</p>
+ </div>
+</section>
+
+<!-- STRIPON VIDEO FEED -->
+<main class="feed" id="feed">
+ <h2 class="section-title">Recommended for you</h2>
+
+ <article class="video-card" data-category="Entertainment">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900" alt="Adventure">
+   <span class="duration">03:12</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Creator">
+   <div class="description">
+    <h3>Amazing Adventures and Unforgettable Moments</h3>
+    <p>F. FARIDY · 5 views · 6 days ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <article class="video-card" data-category="Gaming">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=900" alt="Gaming">
+   <span class="duration">05:08</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" alt="Creator">
+   <div class="description">
+    <h3>Midnight Squad - A Dynamic Gaming Experience</h3>
+    <p>Furious Frames · 2 views · 1 month ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <article class="video-card" data-category="Technology">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=900" alt="Technology">
+   <span class="duration">08:30</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100" alt="Creator">
+   <div class="description">
+    <h3>Discover the Future of Technology</h3>
+    <p>Tech World · 120 views · 2 days ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <article class="video-card" data-category="Sports">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=900" alt="Sports">
+   <span class="duration">04:25</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Creator">
+   <div class="description">
+    <h3>Best Sports Moments and Highlights</h3>
+    <p>Sports Zone · 300 views · 1 week ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <article class="video-card" data-category="Travel">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=900" alt="Travel">
+   <span class="duration">06:45</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100" alt="Creator">
+   <div class="description">
+    <h3>Beautiful Places Around the World</h3>
+    <p>Travel Diaries · 50 views · 3 days ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <article class="video-card" data-category="Music">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=900" alt="Music">
+   <span class="duration">04:15</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" alt="Creator">
+   <div class="description">
+    <h3>Live Music and Amazing Performances</h3>
+    <p>STRIPON Music · 80 views · 2 days ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <article class="video-card" data-category="Nature">
+  <div class="thumbnail" onclick="openVideo(this)">
+   <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=900" alt="Nature">
+   <span class="duration">07:20</span>
+  </div>
+  <div class="info">
+   <img class="avatar" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100" alt="Creator">
+   <div class="description">
+    <h3>Beautiful Nature and Wildlife</h3>
+    <p>Nature World · 40 views · 4 days ago</p>
+   </div>
+   <button class="dots" onclick="openMenu(this)">⋮</button>
+  </div>
+ </article>
+
+ <div class="empty" id="empty">No videos found in this category.</div>
+</main>
+
+<!-- THREE DOT MENU -->
+<div class="overlay" id="overlay" onclick="closeMenu(event)">
+ <div class="menu">
+  <h3>Video options</h3>
+  <button onclick="saveVideo()">☆ Save video</button>
+  <button onclick="shareVideo()">↗ Share video</button>
+  <button onclick="copyLink()">🔗 Copy link</button>
+  <button onclick="reportVideo()">⚑ Report video</button>
+  <button onclick="closeMenu()">Cancel</button>
+ </div>
+</div>
+
+<!-- VIDEO PLAYER -->
+<div class="overlay" id="videoScreen">
+ <div class="player-content">
+  <button class="close" onclick="closeVideo()">✕</button>
+  <div id="youtubePlayer"></div>
+  <video id="videoPlayer" controls playsinline></video>
+  <h3 id="videoName" class="player-title">Video</h3>
+ </div>
+</div>
+
+<!-- COMMENTS -->
+<div class="comment-modal" id="commentModal">
+ <div class="comment-box">
+  <div class="comment-header">
+   <h3>Comments</h3>
+   <button onclick="closeComments()">✕</button>
+  </div>
+  <div class="comment-list" id="commentList"></div>
+  <div class="comment-input">
+   <input id="commentInput" placeholder="Add a comment...">
+   <button onclick="postComment()">Post</button>
+  </div>
+ </div>
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom">
+ <a class="nav active" href="home.html"><span class="symbol">◆</span>Home</a>
+ <a class="nav" href="index.html"><span class="symbol">♧</span>Explore</a>
+ <a href="posting.html" class="nav"><button class="create">+</button></a>
+ <a class="nav" href="shorts.html"><span class="symbol">▷</span>Shorts</a>
+ <a class="nav" href="profile.html"><span class="symbol">♙</span>Profile</a>
+</nav>
+
+<script>
+/* ==================================
+   STRIPON CONFIGURATION
+================================== */
+
+// Paste your Google YouTube Data API v3 key below.
+const YOUTUBE_API_KEY = "PASTE_YOUR_YOUTUBE_API_KEY_HERE";
+
+const YOUTUBE_REGION = "KE";
+
+let activeCategory = "All";
+let selectedCard = null;
+let currentCommentCard = null;
+let youtubeMode = "fresh";
+let youtubeVideos = [];
+
+/* ==================================
+   CATEGORY AND SEARCH
+================================== */
+
+function chooseCategory(category,button){
+ activeCategory = category;
+
+ document.querySelectorAll(".category").forEach(b=>{
+  b.classList.remove("active");
+ });
+
+ button.classList.add("active");
+ filterVideos();
+ loadYouTubeVideos();
+}
+
+function toggleSearch(){
+ document.getElementById("searchPanel").classList.toggle("show");
+}
+
+function clearSearch(){
+ document.getElementById("searchInput").value = "";
+ filterVideos();
+ loadYouTubeVideos();
+}
+
+function filterVideos(){
+ const input = document.getElementById("searchInput");
+ const query = input.value.toLowerCase().trim();
+ let count = 0;
+
+ document.querySelectorAll(".video-card").forEach(card=>{
+  const category = card.dataset.category;
+  const text = card.innerText.toLowerCase();
+
+  const categoryMatch =
+   activeCategory === "All" ||
+   (activeCategory === "Recently uploaded" && card.dataset.recent === "true") ||
+   category === activeCategory;
+
+  const searchMatch = text.includes(query);
+  const visible = categoryMatch && searchMatch;
+
+  card.style.display = visible ? "block" : "none";
+  if(visible) count++;
+ });
+
+ document.querySelectorAll(".youtube-card").forEach(card=>{
+  const categoryMatch =
+   activeCategory === "All" ||
+   activeCategory === "Recently uploaded" ||
+   categoryMatchesYouTube(activeCategory,card.dataset.category);
+
+  const searchMatch = card.innerText.toLowerCase().includes(query);
+  card.style.display = categoryMatch && searchMatch ? "block" : "none";
+ });
+
+ document.getElementById("empty").style.display = count ? "none" : "block";
+}
+
+function categoryMatchesYouTube(selected,videoCategory){
+ if(!selected || selected === "All") return true;
+ return selected.toLowerCase() === (videoCategory || "").toLowerCase();
+}
+
+/* ==================================
+   LOCAL STORAGE DATA
+================================== */
+
+function getSaved(){
+ try{return JSON.parse(localStorage.getItem("striponSavedVideos") || "[]")}
+ catch(e){return []}
+}
+
+function getLikes(){
+ try{return JSON.parse(localStorage.getItem("striponLikes") || "{}")}
+ catch(e){return {}}
+}
+
+function getComments(){
+ try{return JSON.parse(localStorage.getItem("striponComments") || "{}")}
+ catch(e){return {}}
+}
+
+function getVideoId(card){
+ return card.dataset.youtubeId ||
+  card.dataset.videoId ||
+  card.querySelector("h3").innerText;
+}
+
+function getVideoTitle(card){
+ return card.querySelector("h3").innerText;
+}
+
+function getVideoUrl(card){
+ if(card.dataset.youtubeId){
+  return "https://www.youtube.com/watch?v=" + card.dataset.youtubeId;
+ }
+ return card.dataset.url || location.href;
+}
+
+/* ==================================
+   ADD LIKE / COMMENT / DOWNLOAD
+================================== */
+
+function addVideoActions(){
+ document.querySelectorAll(".video-card,.youtube-card").forEach(card=>{
+  if(card.querySelector(".video-actions")) return;
+
+  const id = getVideoId(card);
+  const likes = getLikes();
+  const comments = getComments();
+  const savedLike = likes[id] || {count:0,liked:false};
+
+  const actions = document.createElement("div");
+  actions.className = "video-actions";
+
+  actions.innerHTML = `
+   <button class="video-action ${savedLike.liked ? "liked" : ""}" onclick="toggleLike(this)">
+    <span>👍</span>
+    <b class="like-count">${savedLike.count || 0}</b>
+   </button>
+   <button class="video-action" onclick="openComments(this)">
+    <span>💬</span>
+    <b>${(comments[id] || []).length}</b>
+   </button>
+   <button class="video-action" onclick="downloadVideo(this)">
+    <span>⬇</span> Download
+   </button>
+  `;
+
+  card.appendChild(actions);
+ });
+}
+
+function toggleLike(button){
+ const card = button.closest(".video-card,.youtube-card");
+ const id = getVideoId(card);
+ const likes = getLikes();
+
+ if(typeof likes[id] === "number"){
+  likes[id] = {count:likes[id],liked:false};
+ }
+
+ if(!likes[id]) likes[id] = {count:0,liked:false};
+
+ likes[id].liked = !likes[id].liked;
+ likes[id].count = Math.max(0,likes[id].count + (likes[id].liked ? 1 : -1));
+
+ button.classList.toggle("liked",likes[id].liked);
+ button.querySelector(".like-count").textContent = likes[id].count;
+
+ localStorage.setItem("striponLikes",JSON.stringify(likes));
+}
+
+/* ==================================
+   COMMENTS
+================================== */
+
+function openComments(button){
+ currentCommentCard = button.closest(".video-card,.youtube-card");
+ document.getElementById("commentModal").classList.add("show");
+ displayComments();
+}
+
+function closeComments(){
+ document.getElementById("commentModal").classList.remove("show");
+ currentCommentCard = null;
+}
+
+function displayComments(){
+ if(!currentCommentCard) return;
+
+ const id = getVideoId(currentCommentCard);
+ const comments = getComments()[id] || [];
+ const list = document.getElementById("commentList");
+
+ list.replaceChildren();
+
+ if(!comments.length){
+  const empty = document.createElement("p");
+  empty.style.color = "#aab3c2";
+  empty.textContent = "No comments yet. Start the conversation!";
+  list.appendChild(empty);
+ }
+
+ comments.forEach(comment=>{
+  const item = document.createElement("div");
+  item.className = "comment-item";
+
+  const name = document.createElement("strong");
+  name.textContent = comment.user;
+
+  const message = document.createElement("p");
+  message.textContent = comment.text;
+
+  item.append(name,message);
+  list.appendChild(item);
+ });
+
+ list.scrollTop = list.scrollHeight;
+}
+
+function postComment(){
+ if(!currentCommentCard) return;
+
+ const input = document.getElementById("commentInput");
+ const message = input.value.trim();
+ if(!message) return;
+
+ const id = getVideoId(currentCommentCard);
+ const comments = getComments();
+
+ if(!comments[id]) comments[id] = [];
+
+ comments[id].push({user:"You",text:message});
+ localStorage.setItem("striponComments",JSON.stringify(comments));
+
+ input.value = "";
+ displayComments();
+ updateCommentCount();
+}
+
+function updateCommentCount(){
+ if(!currentCommentCard) return;
+
+ const id = getVideoId(currentCommentCard);
+ const comments = getComments();
+
+ const button = currentCommentCard.querySelector(
+  ".video-actions button:nth-child(2) b"
+ );
+
+ if(button) button.textContent = (comments[id] || []).length;
+}
+
+/* ==================================
+   DOWNLOAD
+================================== */
+
+function downloadVideo(button){
+ const card = button.closest(".video-card,.youtube-card");
+ const videoUrl = card.dataset.video;
+
+ if(!videoUrl){
+  alert("This video has no downloadable video file. YouTube videos must be watched through YouTube. Download is available only for video files you have permission to download.");
+  return;
+ }
+
+ const link = document.createElement("a");
+ link.href = videoUrl;
+ link.download = "STRIPON-video";
+ link.target = "_blank";
+ link.click();
+}
+
+/* ==================================
+   THREE DOT MENU
+================================== */
+
+function openMenu(button){
+ selectedCard = button.closest(".video-card");
+ document.getElementById("overlay").classList.add("show");
+}
+
+function closeMenu(event){
+ if(!event || event.target.id === "overlay"){
+  document.getElementById("overlay").classList.remove("show");
+ }
+}
+
+function saveVideo(){
+ if(!selectedCard) return;
+
+ const saved = getSaved();
+ const title = getVideoTitle(selectedCard);
+ const url = getVideoUrl(selectedCard);
+
+ if(!saved.some(item=>item.title === title)){
+  saved.push({title,url});
+  localStorage.setItem("striponSavedVideos",JSON.stringify(saved));
+  alert("Video saved!");
+ }else{
+  alert("Already saved!");
+ }
+
+ closeMenu();
+}
+
+async function shareVideo(){
+ if(!selectedCard) return;
+
+ const title = getVideoTitle(selectedCard);
+ const url = getVideoUrl(selectedCard);
+
+ try{
+  if(navigator.share){
+   await navigator.share({title,url});
+  }else{
+   await copyText(url);
+   alert("Link copied!");
+  }
+ }catch(e){}
+
+ closeMenu();
+}
+
+async function copyText(text){
+ if(navigator.clipboard && window.isSecureContext){
+  await navigator.clipboard.writeText(text);
+ }else{
+  const input = document.createElement("textarea");
+  input.value = text;
+  document.body.appendChild(input);
+  input.select();
+  document.execCommand("copy");
+  input.remove();
+ }
+}
+
+async function copyLink(){
+ try{
+  await copyText(selectedCard ? getVideoUrl(selectedCard) : location.href);
+  alert("Link copied!");
+ }catch(e){
+  alert("Could not copy link.");
+ }
+ closeMenu();
+}
+
+function reportVideo(){
+ alert("Report received in this demonstration.");
+ closeMenu();
+}
+
+/* ==================================
+   VIDEO PLAYER
+================================== */
+
+function openVideo(thumbnail){
+ const card = thumbnail.closest(".video-card");
+ const youtubeId = card.dataset.youtubeId;
+ const video = card.dataset.video;
+
+ document.getElementById("videoName").innerText = getVideoTitle(card);
+
+ const player = document.getElementById("videoPlayer");
+ const youtubePlayer = document.getElementById("youtubePlayer");
+
+ player.style.display = "none";
+ youtubePlayer.replaceChildren();
+
+ if(youtubeId){
+  const frame = document.createElement("iframe");
+  frame.src = "https://www.youtube-nocookie.com/embed/" +
+   encodeURIComponent(youtubeId) + "?autoplay=1&rel=0";
+  frame.title = "YouTube video player";
+  frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  frame.allowFullscreen = true;
+  youtubePlayer.appendChild(frame);
+ }else if(video){
+  player.style.display = "block";
+  player.src = video;
+  player.play().catch(()=>{});
+ }else{
+  alert("Add the actual uploaded video URL to play this video.");
+  return;
+ }
+
+ document.getElementById("videoScreen").classList.add("show");
+}
+
+function closeVideo(){
+ const player = document.getElementById("videoPlayer");
+ player.pause();
+ player.removeAttribute("src");
+ player.load();
+ document.getElementById("youtubePlayer").replaceChildren();
+ document.getElementById("videoScreen").classList.remove("show");
+}
+
+/* ==================================
+   YOUTUBE API
+================================== */
+
+const YOUTUBE_BASE = "https://www.googleapis.com/youtube/v3";
+
+const CATEGORY_IDS = {
+ Music:"10",
+ Gaming:"20",
+ Sports:"17",
+ News:"25",
+ Education:"27",
+ Comedy:"23",
+ Entertainment:"24"
+};
+
+function getYouTubeCategoryParams(){
+ const params = {};
+
+ if(CATEGORY_IDS[activeCategory]){
+  params.videoCategoryId = CATEGORY_IDS[activeCategory];
+ }
+
+ if(activeCategory === "Live"){
+  params.eventType = "live";
+ }
+
+ return params;
+}
+
+async function youtubeRequest(endpoint,params){
+ const url = new URL(YOUTUBE_BASE + "/" + endpoint);
+
+ Object.entries(params).forEach(([key,value])=>{
+  if(value !== undefined && value !== null && value !== ""){
+   url.searchParams.set(key,value);
+  }
+ });
+
+ url.searchParams.set("key",YOUTUBE_API_KEY);
+
+ const response = await fetch(url);
+
+ if(!response.ok){
+  const error = await response.json().catch(()=>({}));
+  throw new Error(error.error?.message || "YouTube API request failed.");
+ }
+
+ return response.json();
+}
+
+async function loadYouTubeVideos(){
+ const container = document.getElementById("youtubeFeed");
+
+ if(!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "PASTE_YOUR_YOUTUBE_API_KEY_HERE"){
+  container.innerHTML = '<p class="youtube-status">Add your YouTube Data API v3 key in the YOUTUBE_API_KEY setting inside this HTML file to activate YouTube videos.</p>';
+  return;
+ }
+
+ container.innerHTML = '<p class="youtube-status">Loading YouTube videos...</p>';
+
+ try{
+  let results = [];
+
+  const common = {
+   part:"snippet",
+   type:"video",
+   maxResults:"12",
+   regionCode:YOUTUBE_REGION,
+   safeSearch:"moderate",
+   ...getYouTubeCategoryParams()
+  };
+
+  const searchInput = document.getElementById("searchInput").value.trim();
+
+  if(youtubeMode === "popular"){
+   const data = await youtubeRequest("videos",{
+    part:"snippet,statistics,contentDetails",
+    chart:"mostPopular",
+    regionCode:YOUTUBE_REGION,
+    maxResults:"12",
+    videoCategoryId:CATEGORY_IDS[activeCategory] || undefined
+   });
+
+   results = data.items || [];
+
+  }else{
+   const params = {
+    ...common,
+    q:searchInput || (
+     activeCategory === "All" ? "popular videos" : activeCategory
+    )
+   };
+
+   if(youtubeMode === "fresh"){
+    params.order = "date";
+   }else{
+    // Rising is an approximation: recently published videos
+    // ordered by view count, not measured view velocity.
+    params.order = "viewCount";
+    params.publishedAfter = new Date(
+     Date.now() - 30*24*60*60*1000
+    ).toISOString();
+   }
+
+   if(activeCategory === "Live"){
+    params.eventType = "live";
+   }
+
+   const data = await youtubeRequest("search",params);
+   const ids = (data.items || [])
+    .map(item=>item.id?.videoId)
+    .filter(Boolean);
+
+   if(ids.length){
+    const details = await youtubeRequest("videos",{
+     part:"snippet,statistics,contentDetails",
+     id:ids.join(",")
+    });
+
+    results = details.items || [];
+   }
+  }
+
+  youtubeVideos = results;
+  renderYouTubeVideos();
+
+ }catch(error){
+  console.error(error);
+  container.innerHTML =
+   '<p class="youtube-status">YouTube could not load videos. Check your API key, API restrictions, internet connection and Google Cloud project settings. Details: ' +
+   escapeHTML(error.message) + '</p>';
+ }
+}
+
+/* ==================================
+   RENDER YOUTUBE RESULTS
+================================== */
+
+function escapeHTML(value){
+ return String(value ?? "").replace(/[&<>"']/g,char=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[char]));
+}
+
+function showYouTubeFeed(mode,button){
+ youtubeMode = mode;
+
+ document.querySelectorAll(".discovery-tab").forEach(b=>{
+  b.classList.remove("active");
+ });
+
+ button.classList.add("active");
+ loadYouTubeVideos();
+}
+
+function renderYouTubeVideos(){
+ const container = document.getElementById("youtubeFeed");
+ container.replaceChildren();
+
+ if(!youtubeVideos.length){
+  const message = document.createElement("p");
+  message.className = "youtube-status";
+  message.textContent = "No videos found. Try another category or refresh.";
+  container.appendChild(message);
+  return;
+ }
+
+ youtubeVideos.forEach(video=>{
+  const id = video.id?.videoId || video.id;
+  if(!id) return;
+
+  const snippet = video.snippet || {};
+  const statistics = video.statistics || {};
+  const title = snippet.title || "YouTube video";
+  const channel = snippet.channelTitle || "YouTube creator";
+  const thumbnail =
+   snippet.thumbnails?.high?.url ||
+   snippet.thumbnails?.medium?.url ||
+   snippet.thumbnails?.default?.url || "";
+
+  const card = document.createElement("article");
+  card.className = "youtube-card";
+  card.dataset.youtubeId = id;
+  card.dataset.videoId = id;
+  card.dataset.category = activeCategory === "All"
+   ? "All" : activeCategory;
+
+  const imageArea = document.createElement("div");
+  imageArea.className = "thumbnail";
+  imageArea.onclick = ()=>openVideo(imageArea);
+
+  const image = document.createElement("img");
+  image.src = thumbnail;
+  image.alt = title;
+  image.loading = "lazy";
+  imageArea.appendChild(image);
+
+  const info = document.createElement("div");
+  info.className = "youtube-card-info";
+
+  const heading = document.createElement("h3");
+  heading.textContent = title;
+
+  const details = document.createElement("p");
+  details.textContent =
+   channel + " · " +
+   Number(statistics.viewCount || 0).toLocaleString() + " views";
+
+  const actions = document.createElement("div");
+  actions.className = "youtube-card-actions";
+
+  const watch = document.createElement("button");
+  watch.textContent = "▶ Watch on STRIPON";
+  watch.onclick = ()=>openVideo(imageArea);
+
+  const original = document.createElement("a");
+  original.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
+  original.target = "_blank";
+  original.rel = "noopener noreferrer";
+  original.textContent = "Open YouTube";
+
+  actions.append(watch,original);
+  info.append(heading,details,actions);
+  card.append(imageArea,info);
+  container.appendChild(card);
+ });
+
+ addVideoActions();
+ filterVideos();
+}
+
+/* ==================================
+   STARTUP
+================================== */
+
+document.addEventListener("DOMContentLoaded",()=>{
+ addVideoActions();
+ loadYouTubeVideos();
+});
+
+</script>
+
+</body>
+</html>
+
