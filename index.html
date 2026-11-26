@@ -992,54 +992,70 @@ async function copyText(value){
   t.remove();
  }
 }
-
-async function shareVideo(){
- if(!selectedCard)return;
-
- const data={
-  title:getVideoTitle(selectedCard),
-  url:getVideoUrl(selectedCard)
- };
-
- try{
-  if(navigator.share){
-   await navigator.share(data);
-  }else{
-   await copyText(data.url);
-   alert("Link copied.");
-  }
- }catch(e){}
-
- closeMenu();
-}
-
-async function copyLink(){
- try{
-  await copyText(
-   selectedCard?getVideoUrl(selectedCard):location.href
-  );
-
-  alert("Link copied.");
- }catch(e){
-  alert("Could not copy link.");
- }
-
- closeMenu();
-}
-
-function reportVideo(){
- alert("Thank you. This demo records no report on a server.");
- closeMenu();
-}
-
+ 
 function openVideo(area){
- const card=area.closest(".video-card,.youtube-card");
- const id=card.dataset.youtubeId;
- const video=card.dataset.video;
+  const card=area.closest(".video-card,.youtube-card");
 
- document.getElementById("videoName").textContent=getVideoTitle(card);
+  if(!card)return;
 
- const player=document.getElementById("videoPlayer");
+  const id=card.dataset.youtubeId;
+  const video=card.dataset.video;
+
+  // Sample cards search for real YouTube videos inside STRIPON
+  if(!id && !video){
+    const query=getVideoTitle(card);
+
+    document.getElementById("searchInput").value=query;
+    document.getElementById("searchPanel").classList.add("show");
+
+    activeCategory="All";
+    youtubeMode="fresh";
+
+    document.querySelectorAll(".category").forEach(b=>{
+      b.classList.toggle("active",b.textContent.trim()==="All");
+    });
+
+    loadYouTubeVideos();
+
+    document.getElementById("youtubeFeed").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+    return;
+  }
+
+  document.getElementById("videoName").textContent=getVideoTitle(card);
+
+  const player=document.getElementById("videoPlayer");
+  const frameBox=document.getElementById("youtubePlayer");
+
+  player.style.display="none";
+  frameBox.replaceChildren();
+
+  if(id){
+    const frame=document.createElement("iframe");
+
+    frame.src="https://www.youtube-nocookie.com/embed/"+
+      encodeURIComponent(id)+"?autoplay=1&rel=0";
+
+    frame.title="YouTube video player";
+
+    frame.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+    frame.allowFullscreen=true;
+
+    frameBox.appendChild(frame);
+
+  }else if(video){
+    player.src=video;
+    player.style.display="block";
+    player.play().catch(()=>{});
+  }
+
+  document.getElementById("videoScreen").classList.add("show");
+}
+
  const frameBox=document.getElementById("youtubePlayer");
 
  player.style.display="none";
